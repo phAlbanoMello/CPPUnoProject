@@ -1,0 +1,114 @@
+@startuml UNOCPPClassDiagram
+
+title UNOCPPClassDiagram
+
+abstract class Service
+{
+    - Init()
+    - Stop()
+}
+abstract class Player
+{
+    string name
+    Deck deck
+    bool HasShoutedUno
+
+    PlayCard(Card)
+    CheckValidCardType()
+    vector<Card> GetHand()
+}
+abstract class Card
+{
+    - Color
+    - Place()
+}
+abstract class Deck
+{
+    vector<Card> cards
+    vector<Card> GetCards()
+    void RemoveCard(Card)
+    void AddCard(Card)
+    void ReceiveCards(vector<Cards> cards)
+    vector<Cards> GiveCardsByAmount(int amount)
+}
+class ConsoleService << (S, #FF7700) Static >> 
+{
+    Print(string)
+    Space(int lineCount)
+}
+class EventBus << (S, #FF7700) Static >>
+{
+    SubscribeEvent
+    UnsubscribeEvent
+    Publish
+}
+class CardEffect{
+    Execute()
+}
+class TableService{
+    CardPile cardPile
+    GenerateCardPile()
+}
+class GameService{
+    StartGame()
+}
+class CardFactory
+{
+    CreateSpecialCard(CardEffect, Color color)
+    CreateNumberCard(int number, Color color)
+}
+class SpecialCard 
+{
+    CardEffect effect
+}
+class NumberCard
+{
+    int Number
+}
+
+class ServiceInitializer
+class BotPlayer
+class HumanPlayer
+class Hand
+class CardPile
+class PlayerService
+class Color
+
+PlayerService <|--- Service
+TableService <|--- Service
+GameService <|--- Service
+
+BotPlayer <|-- Player
+HumanPlayer <|-- Player
+
+SpecialCard <|-- Card
+NumberCard <|-- Card
+
+Hand <|-- Deck
+CardPile <|-- Deck
+
+SpecialCard *-- CardEffect
+Player *-- Hand
+TableService *-- CardPile
+Card *-- Color
+
+ServiceInitializer <-- PlayerService
+ServiceInitializer <-- GameService
+ServiceInitializer <-- TableService
+
+NumberCard --> CardFactory
+SpecialCard --> CardFactory
+TableService --> CardFactory
+
+PlayerService <-- BotPlayer
+PlayerService <-- HumanPlayer
+PlayerService <-- CardFactory
+'-----------------------------------------------------------
+skinParam TitleFontSize 32
+skinparam backgroundColor Teal
+skinParam ClassBackgroundColor DarkSlateGrey
+skinParam DefaultFontColor White
+skinParam ClassFontColor SkyBlue
+skinParam ArrowColor LightSkyBlue 
+skinparam DefaultFontSize 25
+skinparam DefaultFontName Roboto
