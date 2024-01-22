@@ -10,7 +10,7 @@ abstract class Service
 abstract class Player
 {
     string name
-    Deck deck
+    Hand hand
     bool HasShoutedUno
 
     PlayCard(Card)
@@ -45,12 +45,31 @@ class EventBus << (S, #FF7700) Static >>
 class CardEffect{
     Execute()
 }
-class TableService{
-    CardPile cardPile
-    GenerateCardPile()
+class Turn
+{
+    int count
+    Player currentPlayer
+    FlowDirection currentFlowDirection
+    Card& topCard
 }
-class GameService{
+class GameService
+{
+    DiscardStack discardStack
+    vector<Turn> Turns
+    GetDiscardStack()
+    GenerateDiscardStack()
     StartGame()
+    NextTurn()
+}
+class PlayerService
+{
+    - Load all Players data?
+    - Initialize Players Decks?
+    GetPlayerDeck(playerId)
+}
+class InputService
+{
+    GetInput<T>(string message)
 }
 class CardFactory
 {
@@ -70,39 +89,48 @@ class ServiceInitializer
 class BotPlayer
 class HumanPlayer
 class Hand
-class CardPile
+class DiscardStack
 class PlayerService
-class Color
+class Color 
 
-PlayerService <|--- Service
-TableService <|--- Service
-GameService <|--- Service
 
-BotPlayer <|-- Player
-HumanPlayer <|-- Player
+PlayerService --o Service
+GameService --o Service
+InputService --o Service
 
-SpecialCard <|-- Card
-NumberCard <|-- Card
+BotPlayer --o Player
+HumanPlayer --o Player
 
-Hand <|-- Deck
-CardPile <|-- Deck
+SpecialCard --o Card
+NumberCard --o Card
+
+Hand o-- Deck
+DiscardStack o-- Deck
 
 SpecialCard *-- CardEffect
 Player *-- Hand
-TableService *-- CardPile
+GameService *-- DiscardStack
+GameService *-- Turn
 Card *-- Color
+
+Service <-- ServiceInitializer
 
 ServiceInitializer <-- PlayerService
 ServiceInitializer <-- GameService
-ServiceInitializer <-- TableService
+ServiceInitializer <-- InputService
 
-NumberCard --> CardFactory
-SpecialCard --> CardFactory
-TableService --> CardFactory
+CardFactory --> NumberCard
+CardFactory --> SpecialCard
 
-PlayerService <-- BotPlayer
-PlayerService <-- HumanPlayer
-PlayerService <-- CardFactory
+GameService --> CardFactory
+InputService <-- PlayerService
+'-------------Legend----------------------------------
+abstract class Abstraction
+
+ImplementationOf --o Abstraction
+IsComponentOf --* UsesComponent
+DependsOn --> Dependency
+Parent --|> Child
 '-----------------------------------------------------------
 skinParam TitleFontSize 32
 skinparam backgroundColor Teal
