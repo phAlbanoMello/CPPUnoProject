@@ -127,7 +127,75 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Players\BotPlayer.cpp" />
+    <ClCompile Include="Cards\Card.cpp" />
+    <ClCompile Include="Components\CardEffect.cpp" />
+    <ClCompile Include="Cards\CardFactory.cpp" />
+    <ClCompile Include="Components\Color.cpp" />
+    <ClCompile Include="Events\ColorChanged.cpp" />
+    <ClCompile Include="Services\ConsoleService.cpp" />
     <ClCompile Include="ConsoleUNOProject.cpp" />
+    <ClCompile Include="Cards\Deck.cpp" />
+    <ClCompile Include="Components\DiscardStack.cpp" />
+    <ClCompile Include="Events\DiscardStackReady.cpp" />
+    <ClCompile Include="Events\EventBus.cpp" />
+    <ClCompile Include="Events\GameOver.cpp" />
+    <ClCompile Include="Services\GameService.cpp" />
+    <ClCompile Include="Components\Hand.cpp" />
+    <ClCompile Include="Players\HumanPlayer.cpp" />
+    <ClCompile Include="Services\InputService.cpp" />
+    <ClCompile Include="Cards\NumberCard.cpp" />
+    <ClCompile Include="Events\PlacedCard.cpp" />
+    <ClCompile Include="Events\PlayAgain.cpp" />
+    <ClCompile Include="Components\PlayData.cpp" />
+    <ClCompile Include="Players\Player.cpp" />
+    <ClCompile Include="Services\PlayerService.cpp" />
+    <ClCompile Include="Events\PlayersLoaded.cpp" />
+    <ClCompile Include="Events\ReversedDirection.cpp" />
+    <ClCompile Include="Services\RulesService.cpp" />
+    <ClCompile Include="Services\Service.cpp" />
+    <ClCompile Include="Services\ServiceLocator.cpp" />
+    <ClCompile Include="Events\ServicesLoaded.cpp" />
+    <ClCompile Include="Events\ShoutedUno.cpp" />
+    <ClCompile Include="Events\Skiped.cpp" />
+    <ClCompile Include="Cards\SpecialCard.cpp" />
+    <ClCompile Include="Components\Turn.cpp" />
+    <ClCompile Include="Events\TurnEnded.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Players\BotPlayer.h" />
+    <ClInclude Include="Cards\Card.h" />
+    <ClInclude Include="Components\CardEffect.h" />
+    <ClInclude Include="Cards\CardFactory.h" />
+    <ClInclude Include="Components\Color.h" />
+    <ClInclude Include="Events\ColorChanged.h" />
+    <ClInclude Include="Services\ConsoleService.h" />
+    <ClInclude Include="Cards\Deck.h" />
+    <ClInclude Include="Components\DiscardStack.h" />
+    <ClInclude Include="Events\DiscardStackReady.h" />
+    <ClInclude Include="Events\EventBus.h" />
+    <ClInclude Include="Events\GameOver.h" />
+    <ClInclude Include="Services\GameService.h" />
+    <ClInclude Include="Components\Hand.h" />
+    <ClInclude Include="Players\HumanPlayer.h" />
+    <ClInclude Include="Services\InputService.h" />
+    <ClInclude Include="Cards\NumberCard.h" />
+    <ClInclude Include="Events\PlacedCard.h" />
+    <ClInclude Include="Events\PlayAgain.h" />
+    <ClInclude Include="Components\PlayData.h" />
+    <ClInclude Include="Players\Player.h" />
+    <ClInclude Include="Services\PlayerService.h" />
+    <ClInclude Include="Events\PlayersLoaded.h" />
+    <ClInclude Include="Events\ReversedDirection.h" />
+    <ClInclude Include="Services\RulesService.h" />
+    <ClInclude Include="Services\Service.h" />
+    <ClInclude Include="Services\ServiceLocator.h" />
+    <ClInclude Include="Events\ServicesLoaded.h" />
+    <ClInclude Include="Events\ShoutedUno.h" />
+    <ClInclude Include="Events\Skiped.h" />
+    <ClInclude Include="Cards\SpecialCard.h" />
+    <ClInclude Include="Components\Turn.h" />
+    <ClInclude Include="Events\TurnEnded.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

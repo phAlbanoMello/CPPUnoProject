@@ -1,0 +1,82 @@
+@startuml EventBusDiagram
+
+title EventBus Diagram
+
+class GameService
+class PlayerService
+class InputService
+class ServiceInitializer
+class RulesService
+class Player
+
+class PlayData{
+    Card& cardPlaced
+    Player& playerThatPlaced
+}
+
+class ServicesLoaded <<(E, #335500) Event>>
+class PlayersLoaded <<(E, #335500) Event>>
+class DiscardStackReady <<(E, #335500) Event>>
+class GameOver <<(E, #335500) Event>>
+class PlayAgain <<(E, #335500) Event>>
+class ReversedDirection <<(E, #335500) Event>>
+class Skiped <<(E, #335500) Event>>
+class ColorChanged <<(E, #335500) Event>>
+
+class PlacedACard <<(E, #335500) Event>>{
+    Play playData
+}
+class TurnEnded <<(E, #335500) Event>>{
+    Turn& turn
+}
+class ShoutedUno <<(E, #335500) Event>>{
+    Player player
+}
+class EventBus << (S, #FF7700) Static >>
+{
+    SubscribeEvent(EventHandlerDelegate)
+    UnsubscribeEvent(EventHandlerDelegate)
+    Publish(EventClass)
+}
+
+ServicesLoaded <.. ServiceInitializer
+DiscardStackReady <.. GameService
+PlayersLoaded <.. PlayerService
+PlacedACard <.. Player
+GameOver <.. RulesService
+TurnEnded <.. RulesService
+ReversedDirection <.. RulesService
+Skiped <.. RulesService
+ColorChanged <.. RulesService
+ShoutedUno <.. InputService
+PlayAgain <.. InputService
+
+GameService --|> ServicesLoaded
+GameService --|> PlayersLoaded
+GameService --|> GameOver
+GameService --|> TurnEnded
+GameService --|> ReversedDirection
+GameService --|> Skiped
+GameService --|> ColorChanged
+GameService --|> PlayAgain
+
+RulesService --|> PlacedACard
+RulesService --|> ShoutedUno
+
+PlayerService --|> DiscardStackReady
+
+'--------------------Legend------------------
+class Event <<(E, #335500) Event>>
+
+Listener --|> Event
+Publisher ..> Event
+'-------------------------------------------
+skinParam TitleFontSize 32
+skinparam backgroundColor Teal
+skinParam ClassBackgroundColor DarkSlateGrey
+skinParam DefaultFontColor White
+skinParam ClassFontColor SkyBlue
+skinParam ArrowColor LightSkyBlue 
+skinparam DefaultFontSize 25
+skinparam DefaultFontName Roboto
+skinParam ClassAttributeColor Black

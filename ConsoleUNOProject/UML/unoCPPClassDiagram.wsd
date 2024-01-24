@@ -12,6 +12,7 @@ abstract class Player
     string name
     Hand hand
     bool HasShoutedUno
+    PlayData playData
 
     PlayCard(Card)
     CheckValidCardType()
@@ -19,6 +20,7 @@ abstract class Player
 }
 abstract class Card
 {
+    - Id
     - Color
     - Place()
 }
@@ -35,6 +37,8 @@ class ConsoleService << (S, #FF7700) Static >>
 {
     Print(string)
     Space(int lineCount)
+    DisplayGameState() : Gives feedback on whats the current step
+    DrawCard(Card)
 }
 class EventBus << (S, #FF7700) Static >>
 {
@@ -52,13 +56,20 @@ class Turn
     FlowDirection currentFlowDirection
     Card& topCard
 }
+class PlayData{
+    Card& cardPlaced
+    Player& playerThatPlaced
+    bool HasShoutedUno
+}
 class GameService
 {
     DiscardStack discardStack
     vector<Turn> Turns
+    IsGameFinished()
     GetDiscardStack()
     GenerateDiscardStack()
     StartGame()
+    EndGame()
     NextTurn()
 }
 class PlayerService
@@ -84,6 +95,16 @@ class NumberCard
 {
     int Number
 }
+class RulesService
+{
+    CheckPlayData()
+    ValidateCardPlace()
+    PublishColorChangedEvent
+    PublishTurnEndedEvent
+    PublishReverseDirectionEvent
+    PublishSkipNextPlayerEvent
+    PublishGameOverEvent
+}
 
 class ServiceInitializer
 class BotPlayer
@@ -93,10 +114,10 @@ class DiscardStack
 class PlayerService
 class Color 
 
-
 PlayerService --o Service
 GameService --o Service
 InputService --o Service
+RulesService --o Service
 
 BotPlayer --o Player
 HumanPlayer --o Player
@@ -109,6 +130,7 @@ DiscardStack o-- Deck
 
 SpecialCard *-- CardEffect
 Player *-- Hand
+Player *-- PlayData
 GameService *-- DiscardStack
 GameService *-- Turn
 Card *-- Color
@@ -118,6 +140,7 @@ Service <-- ServiceInitializer
 ServiceInitializer <-- PlayerService
 ServiceInitializer <-- GameService
 ServiceInitializer <-- InputService
+ServiceInitializer <-- RulesService
 
 CardFactory --> NumberCard
 CardFactory --> SpecialCard
