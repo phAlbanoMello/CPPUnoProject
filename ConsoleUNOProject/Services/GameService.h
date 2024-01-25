@@ -1,9 +1,11 @@
 #pragma once
 #include "Service.h"
+#include "../Cards/NumberCard.h"
+
 class GameService : public Service
 {
-    void Init() override {
-        std::cout << "Initializing GameService" << std::endl;
-    }
+public:
+    void Init() override;
+    void DrawCards(const std::vector<NumberCard>& cards);
 };
 

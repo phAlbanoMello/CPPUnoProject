@@ -3,8 +3,7 @@
 
 class RulesService : public Service
 {
-    void Init() override {
-        std::cout << "Initializing RulesService" << std::endl;
-    }
+    public:
+    void Init() override;
 };
 

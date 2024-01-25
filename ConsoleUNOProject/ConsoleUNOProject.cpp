@@ -1,12 +1,8 @@
 #include "Services/ServiceLocator.h"
 #include "Services/PlayerService.h"
+#include "Services/GameService.h"
 
 int main()
 {
     ServiceLocator::Init();
-
-    std::shared_ptr<PlayerService> ps = ServiceLocator::GetService<PlayerService>();
-    PlayerService actPs = *ps;
-
-    actPs.Test();
 }

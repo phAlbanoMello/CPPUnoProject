@@ -3,12 +3,6 @@
 class PlayerService : public Service
 {
 public:
-    void Init() override {
-        std::cout << "Initializing PlayerService" << std::endl;
-    }
-
-    void Test() {
-        std::cout << "Test Okay" << std::endl;
-    }
+	void Init() override;
 };
 
