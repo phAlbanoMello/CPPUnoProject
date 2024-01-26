@@ -1,13 +1,11 @@
 #include "ConsoleService.h"
 #include <windows.h>
 
-// Helper function to set console color (Windows-specific)
 void SetConsoleColor(ConsoleColor color) {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     SetConsoleTextAttribute(hConsole, static_cast<int>(color));
 }
 
-// Helper function to reset console color (Windows-specific)
 void ResetConsoleColor() {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     SetConsoleTextAttribute(hConsole, static_cast<int>(ConsoleColor::Default));

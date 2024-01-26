@@ -5,15 +5,15 @@ std::shared_ptr<std::string> CreateFrameString(const std::string& frame) {
     return frameString;
 }
 
-CardArt CardFactory::MakeNumberCardArt(int number, ConsoleColor color) {
+CardArt CardFactory::MakeNumberCardArt(int value, ConsoleColor color) {
     CardArt cardArt;
 
-    std::string borderFrame = "|=========|";
-    std::string bodyFrame = "|         |";
-    std::string valueFrame = "|    {0}    |";
+    std::string borderFrame = "|======|";
+    std::string bodyFrame = "|      |";
+    std::string valueFrame = "|  {0}   |";
 
     size_t valuePos = valueFrame.find("{0}");
-    valueFrame.replace(valuePos, 3, std::to_string(number));
+    valueFrame.replace(valuePos, 3, std::to_string(value));
 
     std::string colorizedBodyFrame = "|" + GetColorName(color) + "|";
 
@@ -33,16 +33,36 @@ CardArt CardFactory::MakeNumberCardArt(int number, ConsoleColor color) {
 std::string CardFactory::GetColorName(ConsoleColor color) {
     switch (color) {
     case ConsoleColor::Red:
-        return "   red   ";
+        return " red  ";
     case ConsoleColor::Yellow:
-        return " yellow  ";
-    case ConsoleColor::Black:
-        return "  black  ";
+        return "yellow";
+    case ConsoleColor::Wild:
+        return "black ";
     case ConsoleColor::Blue:
-        return "   blue  ";
+        return " blue ";
     case ConsoleColor::Green:
-        return "  green  ";
+        return "green ";
     default:
-        return "         ";
+        return "      ";
     }
+}
+
+NumberCard CardFactory::CreateNumberCard(int value, ConsoleColor color)
+{
+    CardArt art = MakeNumberCardArt(value, color);
+    NumberCard numberCard = NumberCard{ value, color, art };
+    return numberCard;
+}
+
+std::vector<NumberCard> CardFactory::CreateNumberCards(){
+    std::vector<NumberCard> numberCards;
+
+    for (int value = 0; value <= 2; ++value) {
+        for (ConsoleColor color : {ConsoleColor::Red, ConsoleColor::Yellow, ConsoleColor::Green, ConsoleColor::Blue}) {
+            NumberCard card = CreateNumberCard(value, color);
+            numberCards.emplace_back(card);
+        }
+    }
+
+    return numberCards;
 }

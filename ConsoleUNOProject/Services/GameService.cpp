@@ -1,19 +1,14 @@
 #include "GameService.h"
 #include "ConsoleService.h"
+#include "../Utils/XMLReader.h"
+#include "../Cards/CardFactory.h"
 
 
 void GameService::Init()
 {
-    NumberCard oneBlue = NumberCard{ 3, ConsoleColor::Blue };
-    NumberCard twoRed = NumberCard{ 2, ConsoleColor::Red };
-    NumberCard threeYellow = NumberCard{ 5, ConsoleColor::Yellow };
-    NumberCard dStackCard = NumberCard{ 6, ConsoleColor::Red };
-    std::vector<NumberCard> cards = { oneBlue, twoRed, threeYellow };
+    std::vector<NumberCard> cards = CardFactory::CreateNumberCards();
 
-    ConsoleService::Print("Your hand");
-	DrawCards(cards);
-    ConsoleService::Print("Discard stack current card: ");
-    dStackCard.DrawArt();
+    DrawCards(cards);
 }
 
 void GameService::DrawCards(const std::vector<NumberCard>& cards) {

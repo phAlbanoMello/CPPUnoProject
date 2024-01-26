@@ -1,5 +1,4 @@
-#ifndef CONSOLESERVICE_H
-#define CONSOLESERVICE_H
+#pragma once
 
 #include <iostream>
 #include <string>
@@ -7,7 +6,7 @@
 
 enum class ConsoleColor {
     Default = 7,
-    Black = 0,
+    Wild = 0,
     Blue = 1,
     Green = 2,
     Red = 4,
@@ -24,6 +23,4 @@ public:
     static void Print(const std::string& message);
     static void PrintWithColor(const std::string& message, const ConsoleColor color, bool endLine = true);
 };
-
-#endif
 

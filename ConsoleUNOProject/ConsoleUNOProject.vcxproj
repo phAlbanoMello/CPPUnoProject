@@ -161,6 +161,7 @@
     <ClCompile Include="Cards\SpecialCard.cpp" />
     <ClCompile Include="Components\Turn.cpp" />
     <ClCompile Include="Events\TurnEnded.cpp" />
+    <ClCompile Include="Utils\XMLReader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Players\BotPlayer.h" />
@@ -196,6 +197,10 @@
     <ClInclude Include="Cards\SpecialCard.h" />
     <ClInclude Include="Components\Turn.h" />
     <ClInclude Include="Events\TurnEnded.h" />
+    <ClInclude Include="Utils\XMLReader.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="Resources\characterNames.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
