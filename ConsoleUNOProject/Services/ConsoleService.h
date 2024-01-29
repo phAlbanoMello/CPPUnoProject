@@ -22,5 +22,8 @@ class ConsoleService : public Service{
 public:
     static void Print(const std::string& message);
     static void PrintWithColor(const std::string& message, const ConsoleColor color, bool endLine = true);
+    static void SkipLines(int lineCount = 1);
+    static void PrintDivisor(int lineCount = 1);
+    static void Clear();
 };
 

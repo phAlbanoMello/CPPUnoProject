@@ -81,9 +81,6 @@
     <ClCompile Include="Players\HumanPlayer.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
-    <ClCompile Include="Events\EventBus.cpp">
-      <Filter>Arquivos de Origem</Filter>
-    </ClCompile>
     <ClCompile Include="Events\ServicesLoaded.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
@@ -222,6 +219,9 @@
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
     <ClInclude Include="Utils\XMLReader.h">
+      <Filter>Arquivos de Cabeçalho</Filter>
+    </ClInclude>
+    <ClInclude Include="GameSettings.h">
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
   </ItemGroup>

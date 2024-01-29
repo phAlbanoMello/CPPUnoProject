@@ -1,8 +1,8 @@
 #pragma once
 #include "Service.h"
-class InputService : public Service
-{
-public:
-	void Init() override;
-};
 
+class InputService : public Service{
+public:
+    void Init() override;
+    static char GetPlayerInput();
+};

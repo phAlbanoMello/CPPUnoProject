@@ -24,3 +24,28 @@ void ConsoleService::PrintWithColor(const std::string& message, const ConsoleCol
 
     ResetConsoleColor();
 }
+
+void ConsoleService::SkipLines(int lineCount)
+{
+    for (size_t i = 0; i < lineCount; i++)
+    {
+        std::cout << std::endl;
+    }
+}
+
+void ConsoleService::PrintDivisor(int lineCount)
+{
+    for (size_t i = 0; i < lineCount; i++)
+    {
+        std::cout <<"===========================================================" << std::endl;
+    }
+}
+
+
+void ConsoleService::Clear() {
+#ifdef _WIN32
+    system("cls");
+#else
+    std::cout << "\033[2J\033[H";
+#endif
+}

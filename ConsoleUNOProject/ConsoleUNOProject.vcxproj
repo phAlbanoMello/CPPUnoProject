@@ -138,7 +138,6 @@
     <ClCompile Include="Cards\Deck.cpp" />
     <ClCompile Include="Components\DiscardStack.cpp" />
     <ClCompile Include="Events\DiscardStackReady.cpp" />
-    <ClCompile Include="Events\EventBus.cpp" />
     <ClCompile Include="Events\GameOver.cpp" />
     <ClCompile Include="Services\GameService.cpp" />
     <ClCompile Include="Components\Hand.cpp" />
@@ -164,6 +163,7 @@
     <ClCompile Include="Utils\XMLReader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GameSettings.h" />
     <ClInclude Include="Players\BotPlayer.h" />
     <ClInclude Include="Cards\Card.h" />
     <ClInclude Include="Components\CardEffect.h" />
