@@ -1,5 +1,7 @@
 #pragma once
-class DiscardStack
+#include "../Cards/Deck.h"
+
+class DiscardStack : public Deck
 {
 };
 

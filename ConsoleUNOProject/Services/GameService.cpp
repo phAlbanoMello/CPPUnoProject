@@ -1,10 +1,11 @@
-#include "GameService.h"
-#include "ConsoleService.h"
-#include "../Utils/XMLReader.h"
-#include "../Cards/CardFactory.h"
-#include "InputService.h"
 #include <conio.h>
 #include <iostream>
+#include "GameService.h"
+#include "ConsoleService.h"
+#include "InputService.h"
+#include "../Utils/XMLReader.h"
+#include "../Cards/CardFactory.h"
+#include "PlayerService.h"
 
 
 const char startGameKeyString = 'S';
@@ -24,6 +25,8 @@ void GameService::Init()
 
 void GameService::MainMenu()
 {
+    ConsoleService::Clear();
+
     ConsoleService::PrintWithColor("Welcome to UNO", ConsoleColor::Blue);
     ConsoleService::PrintDivisor();
 
@@ -42,12 +45,11 @@ void GameService::HandleMainMenu()
     {
     case startGameKeyString:
         ConsoleService::Print("StartGame Selected");
-        GameService::StartGame();
+        GameService::StartGame(currentGameSettings);
         break;
     case customSettingsString:
         ConsoleService::Print("Custom Settings Selected");
-        //TODO: Ask for custom settings
-        GameService::AskForSettings();
+        GameService::SettingsMenu();
         break;
     case exitString:
         ConsoleService::Print("Exit selected");
@@ -72,9 +74,27 @@ void GameService::DrawCards(const std::vector<NumberCard>& cards) {
 
 void GameService::StartGame(GameSettings settings) {
     currentGameSettings = settings;
+    ConsoleService::Clear();
+    PlayerService playerService = PlayerService{};
+
+    playerService.CreatePlayers(currentGameSettings.NumberOfPlayers);
+    std::vector<std::shared_ptr<Card>> discardStack = CardFactory::CreateNumberCards();
+    
+    /*std::vector<NumberCard> cards = CardFactory::CreateNumberCards();
+
+    ConsoleService::Print("Discard Stack");
+    ConsoleService::PrintDivisor();
+    NumberCard card = CardFactory::CreateNumberCard(7, ConsoleColor::Blue);
+
+    card.DrawArt();
+    ConsoleService::PrintDivisor();
+    ConsoleService::Print("PlayerHand : ");
+    DrawCards(cards);*/
+
+    _getch();
 }
 
-void GameService::AskForSettings() {
+void GameService::SettingsMenu() {
     ConsoleService::Clear();
     ConsoleService::PrintWithColor("Custom Settings", ConsoleColor::Blue);
     ConsoleService::PrintDivisor(2);
@@ -91,24 +111,41 @@ void GameService::AskForSettings() {
     case 'N':
         ConsoleService::PrintDivisor();
         ConsoleService::Print("Enter the total amount of players (min 2 max 10):");
-        //TODO:Get players amount
+        int input;
+        std::cin >> input;
+        currentGameSettings.NumberOfPlayers = input;
+        SettingsMenu();
         break;
     case 'D':
         ConsoleService::PrintDivisor();
         ConsoleService::Print("Select a Difficulty [E]Easy, [M]Medium, [H]Hard");
-        //TODO:Get player input and set difficulty
+        SetDifficultySetting(_getch());
         break;
     case '\n':
-        ReturnToMenu();
+        MainMenu();
         break;
     default:
         break;
     }
 }
 
-void GameService::ReturnToMenu() {
-    ConsoleService::Clear();
-    MainMenu();
+void GameService::SetDifficultySetting(char input)
+{
+    switch (std::toupper(input))
+    {
+    case 'E':
+        currentGameSettings.Difficulty = Easy;
+        break;
+    case 'M':
+        currentGameSettings.Difficulty = Medium;
+        break;
+    case 'H':
+        currentGameSettings.Difficulty = Hard;
+        break;
+    default:
+        break;
+    }
+    SettingsMenu();
 }
 
 std::string GameService::GetDifficultyString() {

@@ -4,13 +4,7 @@
 #include <unordered_map>
 #include <vector>
 
-struct Event {};
-
-struct UpArrowPressedEvent : Event {};
-struct DownArrowPressedEvent : Event {};
-struct RightArrowPressedEvent : Event {};
-struct LeftArrowPressedEvent : Event {};
-struct UKeyPressedEvent : Event {};
+class Event {};
 
 template <typename EventType>
 class EventBus {

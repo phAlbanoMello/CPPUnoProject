@@ -54,8 +54,9 @@ NumberCard CardFactory::CreateNumberCard(int value, ConsoleColor color)
     return numberCard;
 }
 
-std::vector<NumberCard> CardFactory::CreateNumberCards(){
-    std::vector<NumberCard> numberCards;
+std::vector<std::shared_ptr<NumberCard>> CardFactory::CreateNumberCards(){
+    //TODO: make it return a vector of shared pointers
+    std::vector<std::shared_ptr<NumberCard>> numberCards;
 
     for (int value = 0; value <= 2; ++value) {
         for (ConsoleColor color : {ConsoleColor::Red, ConsoleColor::Yellow, ConsoleColor::Green, ConsoleColor::Blue}) {

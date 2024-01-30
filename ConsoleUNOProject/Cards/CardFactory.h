@@ -11,7 +11,7 @@ public :
     static CardArt MakeNumberCardArt(int value, ConsoleColor color);
     static std::string GetColorName(ConsoleColor color);
     static NumberCard CreateNumberCard(int value, ConsoleColor color);
-    static std::vector<NumberCard> CreateNumberCards();
+    static std::vector<std::shared_ptr<NumberCard>> CreateNumberCards()
 };
 
 
