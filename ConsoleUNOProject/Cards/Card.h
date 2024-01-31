@@ -2,15 +2,25 @@
 #include "../Services/ConsoleService.h"
 #include <functional>
 #include <memory>
+#include <vector>
+
+struct CardArt {
+	std::vector<std::shared_ptr<std::string>> cardArtStrings;
+	ConsoleColor color;
+};
+
 class Card
 {
-private:
-	std::string id;
-	ConsoleColor color = ConsoleColor::Default;
+protected:
+	CardArt cardArt;
 	std::shared_ptr<std::function<void()>> action;
 public:
-	std::string GetId();
-	ConsoleColor GetColor();
+	Card(CardArt cardArt);
+	ConsoleColor GetColor() const;
 	void SetAction(std::function<void()> cardAction);
+	void InvokeAction();
+	virtual void PrintCardData();
+	virtual void DrawArt() const;
+	virtual CardArt GetCardArt();
 };
 

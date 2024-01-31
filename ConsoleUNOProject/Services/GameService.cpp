@@ -6,7 +6,9 @@
 #include "../Utils/XMLReader.h"
 #include "../Cards/CardFactory.h"
 #include "PlayerService.h"
-
+#include <chrono>
+#include <random>
+#include <sstream>
 
 const char startGameKeyString = 'S';
 const char customSettingsString = 'C';
@@ -35,7 +37,7 @@ void GameService::MainMenu()
     ConsoleService::Print("Exit [" + std::string(1, exitString) + "]");
 
     ConsoleService::PrintDivisor();
-
+    
     HandleMainMenu();
 }
 
@@ -59,12 +61,12 @@ void GameService::HandleMainMenu()
     }
 }
 
-void GameService::DrawCards(const std::vector<NumberCard>& cards) {
-    size_t frameCount = cards[0].GetCardArt().cardArtStrings.size();
+void GameService::DrawCards(const std::vector<std::shared_ptr<Card>>& cards) {
+    size_t frameCount = cards[0]->GetCardArt().cardArtStrings.size();
 
     for (size_t frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
         for (const auto& card : cards) {
-            ConsoleService::PrintWithColor(*card.GetCardArt().cardArtStrings[frameIndex], card.GetCardArt().color, false);
+            ConsoleService::PrintWithColor(*card->GetCardArt().cardArtStrings[frameIndex], card->GetCardArt().color, false);
             std::cout << "   ";
         }
 
@@ -78,20 +80,66 @@ void GameService::StartGame(GameSettings settings) {
     PlayerService playerService = PlayerService{};
 
     playerService.CreatePlayers(currentGameSettings.NumberOfPlayers);
-    std::vector<std::shared_ptr<Card>> discardStack = CardFactory::CreateNumberCards();
-    
-    /*std::vector<NumberCard> cards = CardFactory::CreateNumberCards();
 
-    ConsoleService::Print("Discard Stack");
-    ConsoleService::PrintDivisor();
-    NumberCard card = CardFactory::CreateNumberCard(7, ConsoleColor::Blue);
+    std::vector<std::shared_ptr<Card>> allCards = CardFactory::CreateNumberCards();
+    ShuffleVector(allCards);
+    Deck allCardsDeck = Deck{ allCards };
+    playerService.DealCards(allCardsDeck);
+    discardStack.AddCard(allCardsDeck.GetNextCard());
 
-    card.DrawArt();
+    std::vector<std::shared_ptr<Player>> players = playerService.GetPlayers();
+
     ConsoleService::PrintDivisor();
-    ConsoleService::Print("PlayerHand : ");
-    DrawCards(cards);*/
+    for (size_t i = 0; i < players.size(); i++)
+    {
+        if (players[i]->GetName() == "Player")
+        {
+            continue;
+        }
+        std::stringstream playerData;
+
+
+        if (players[i]->GetName() == "Jotaro Kujo")
+        {
+            playerData << " " << players[i]->GetName() << " - Hand : " << players[i]->GetHand()->GetDeck().size() << " <- Turn";
+            ConsoleService::PrintWithColor(playerData.str(), ConsoleColor::Yellow);
+        }
+        else {
+            playerData << players[i]->GetName() << " - Hand : " << players[i]->GetHand()->GetDeck().size();
+            ConsoleService::Print(playerData.str());
+        }
+    }
+    ConsoleService::PrintDivisor();
+    ConsoleService::Print("Discard Stack : ");
+    ConsoleService::PrintDivisor();
+    discardStack.CheckTopCard().DrawArt();
+    ConsoleService::PrintDivisor();
+    std::shared_ptr<Player> player = playerService.GetPlayers()[0];
+    ConsoleService::Print(player->GetName() + " Hand : ");
+    ConsoleService::PrintDivisor();
+    Deck& currentPlayerDeck = *player->GetHand();
+    std::stringstream indexMenu;
+    for (size_t i = 0; i < currentPlayerDeck.GetDeck().size(); i++)
+    {
+        indexMenu << "[" << std::to_string(i) <<"]";
+    }
+    //TODO: Make it only shows indexes of cards you can place
+    //what cards can you place?
+
+    DrawCards(currentPlayerDeck.GetDeck());
+    ConsoleService::PrintDivisor();
+    ConsoleService::Print("Select a card");
+    ConsoleService::Print(indexMenu.str());
+    ConsoleService::PrintDivisor();
 
     _getch();
+}
+
+void GameService::ShuffleVector(std::vector<std::shared_ptr<Card>>& allCards)
+{
+    const unsigned int seed = static_cast<unsigned>(std::chrono::system_clock::now().time_since_epoch().count());
+    auto rng = std::default_random_engine{ seed };
+    std::shuffle(allCards.begin(), allCards.end(), rng);
 }
 
 void GameService::SettingsMenu() {

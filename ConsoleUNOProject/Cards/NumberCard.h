@@ -1,23 +1,16 @@
 #pragma once
 #include <vector>
 #include "../Services/ConsoleService.h"
+#include "../Cards/Card.h"
 
-struct CardArt {
-    std::vector<std::shared_ptr<std::string>> cardArtStrings;
-    ConsoleColor color;
-};
-
-class NumberCard {
+class NumberCard : public Card {
 private:
-    CardArt cardArt;
     int number;
-    ConsoleColor color;
-
 public:
-    NumberCard(int number, ConsoleColor color, CardArt cardArt);
+    NumberCard(CardArt cardArt, int number);
    
     CardArt GetCardArt() const;
-    void DrawArt() const;
     int GetNumber() const;
-    ConsoleColor GetColor() const;
+    void PrintCardData() override;
+    void DrawArt() const override;
 };

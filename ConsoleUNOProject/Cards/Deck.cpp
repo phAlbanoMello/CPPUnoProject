@@ -1,34 +1,16 @@
 #include "Deck.h"
 
+Deck::Deck()
+{
+}
+
+Deck::Deck(std::vector<std::shared_ptr<Card>> cards) : cards(cards)
+{
+}
+
 std::vector<std::shared_ptr<Card>>& Deck::GetDeck()
 {
 	return cards;
-}
-
-void Deck::SendCardTo(std::string cardId, Deck destinationDeck)
-{
-	for (size_t i = 0; i < cards.size(); i++)
-	{
-		if (cards[i]->GetId() == cardId)
-		{
-			destinationDeck.AddCard(std::move(cards[i]));
-			cards.erase(cards.begin() + i);
-			break;
-		}
-	}
-}
-void Deck::SendMultipleCardsTo(std::vector<std::string> cardsToSend, Deck destinationDeck) {
-	for (size_t i = 0; i < cards.size(); i++)
-	{
-		std::string cardId = cards[i]->GetId();
-		auto iterator = std::find(cardsToSend.begin(), cardsToSend.end(), cardId);
-
-		if (iterator != cardsToSend.end())
-		{
-			destinationDeck.AddCard(std::move(cards[i]));
-			cards.erase(cards.begin() + i);
-		}
-	}
 }
 
 void Deck::AddCard(std::shared_ptr<Card> card)
@@ -42,4 +24,15 @@ void Deck::ReceiveCards(std::vector<std::shared_ptr<Card>> incomingCards)
 	{
 		cards.push_back(Card);
 	}
+}
+
+std::shared_ptr<Card> Deck::GetNextCard() {
+	std::shared_ptr<Card> card = cards.back();
+	cards.pop_back();
+
+	return card;
+}
+
+Card& Deck::CheckTopCard() {
+	return *cards.back();
 }

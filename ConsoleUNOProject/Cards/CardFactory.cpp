@@ -47,23 +47,30 @@ std::string CardFactory::GetColorName(ConsoleColor color) {
     }
 }
 
-NumberCard CardFactory::CreateNumberCard(int value, ConsoleColor color)
+std::shared_ptr<NumberCard> CardFactory::CreateNumberCard(int value, ConsoleColor color)
 {
     CardArt art = MakeNumberCardArt(value, color);
-    NumberCard numberCard = NumberCard{ value, color, art };
-    return numberCard;
+    NumberCard numberCard = NumberCard{ art, value };
+    return std::make_shared<NumberCard>(numberCard);
 }
 
-std::vector<std::shared_ptr<NumberCard>> CardFactory::CreateNumberCards(){
-    //TODO: make it return a vector of shared pointers
-    std::vector<std::shared_ptr<NumberCard>> numberCards;
+std::vector<std::shared_ptr<Card>> CardFactory::CreateNumberCards(){
+    std::vector<std::shared_ptr<Card>> numberCards;
 
-    for (int value = 0; value <= 2; ++value) {
-        for (ConsoleColor color : {ConsoleColor::Red, ConsoleColor::Yellow, ConsoleColor::Green, ConsoleColor::Blue}) {
-            NumberCard card = CreateNumberCard(value, color);
-            numberCards.emplace_back(card);
-        }
-    }
+    CreateCardsForColors(numberCards, 2);
 
     return numberCards;
+}
+
+void CardFactory::CreateCardsForColors(std::vector<std::shared_ptr<Card>>& numberCards, int iterations)
+{
+    for (size_t i = 0; i < iterations; i++)
+    {
+        for (int value = 0; value <= 9; ++value) {
+            for (ConsoleColor color : {ConsoleColor::Red, ConsoleColor::Yellow, ConsoleColor::Green, ConsoleColor::Blue}) {
+                std::shared_ptr<NumberCard> card = CreateNumberCard(value, color);
+                numberCards.emplace_back(card);
+            }
+        }
+    }
 }

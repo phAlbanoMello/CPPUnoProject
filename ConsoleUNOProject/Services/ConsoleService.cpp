@@ -37,7 +37,7 @@ void ConsoleService::PrintDivisor(int lineCount)
 {
     for (size_t i = 0; i < lineCount; i++)
     {
-        std::cout <<"===========================================================" << std::endl;
+        std::cout <<"=============================================================================" << std::endl;
     }
 }
 

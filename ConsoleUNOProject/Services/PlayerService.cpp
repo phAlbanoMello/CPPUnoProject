@@ -6,7 +6,7 @@ void PlayerService::Init()
 }
 void PlayerService::CreatePlayers(int amount)
 {
-	std::string filePath = "../Resources/characterNames.xml";
+	std::string filePath = "Resources/characterNames.xml";
 	std::vector<std::string> characterNames = {};
 	
 	try {
@@ -38,4 +38,15 @@ void PlayerService::SetSettings(GameSettings gameSettings)
 std::vector<std::shared_ptr<Player>>& PlayerService::GetPlayers()
 {
 	return players;
+}
+
+void PlayerService::DealCards(Deck& deck)
+{
+	for (size_t i = 0; i < players.size(); i++)
+	{
+		for (size_t j = 0; j < 7; j++)
+		{
+			players[i]->GetHand()->AddCard(deck.GetNextCard());
+		}
+	}
 }

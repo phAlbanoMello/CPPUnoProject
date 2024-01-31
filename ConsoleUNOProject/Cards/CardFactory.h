@@ -7,11 +7,12 @@
 
 class CardFactory
 {
-public :
+public:
     static CardArt MakeNumberCardArt(int value, ConsoleColor color);
     static std::string GetColorName(ConsoleColor color);
-    static NumberCard CreateNumberCard(int value, ConsoleColor color);
-    static std::vector<std::shared_ptr<NumberCard>> CreateNumberCards()
+    static std::shared_ptr<NumberCard> CreateNumberCard(int value, ConsoleColor color);
+    static std::vector<std::shared_ptr<Card>> CreateNumberCards();
+    static void CreateCardsForColors(std::vector<std::shared_ptr<Card>>& numberCards, int iterations);
 };
 
 

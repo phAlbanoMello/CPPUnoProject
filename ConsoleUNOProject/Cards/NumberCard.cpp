@@ -1,7 +1,7 @@
 #include "NumberCard.h" 
+#include "CardFactory.h"
 
-NumberCard::NumberCard(int number, ConsoleColor color, CardArt art) : 
-    number(number), color(color), cardArt(art)
+NumberCard::NumberCard(CardArt cardArt, int number) : Card(cardArt), number(number)
 {
 }
 
@@ -21,8 +21,8 @@ int NumberCard::GetNumber() const
     return number;
 }
 
-ConsoleColor NumberCard::GetColor() const
+void NumberCard::PrintCardData()
 {
-    return color;
+    ConsoleService::Print(CardFactory::GetColorName(cardArt.color));
+    ConsoleService::Print(std::to_string(number));
 }
-

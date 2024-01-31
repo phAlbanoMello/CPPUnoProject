@@ -5,19 +5,19 @@
 #include "../Components/Hand.h"
 #include "../Components/PlayData.h"
 #include "../Cards/Card.h"
+#include "../Cards/Deck.h"
 
 class Player
 {
 private:
 	std::string name;
-	std::shared_ptr<Hand> hand = std::make_shared<Hand>();
-	bool hasShoutedUNO;
+	std::shared_ptr<Deck> hand = std::make_shared<Deck>();
+	bool hasShoutedUNO = false;
 public:
 	Player(std::string name);
 	std::string& GetName();
-	Card PlayCard(std::string id);
 	bool GetHasShoutedUNO() const;
 	void SetShout(bool value);
-	std::shared_ptr<Hand>& GetHand();
+	std::shared_ptr<Deck>& GetHand();
 };
 

@@ -4,6 +4,7 @@
 #include <vector>
 #include <memory>
 #include "../Players/Player.h"
+#include "../Cards/Deck.h"
 
 class PlayerService : public Service
 {
@@ -15,5 +16,6 @@ public:
 	void CreatePlayers(int amount);
 	void SetSettings(GameSettings settings);
 	std::vector<std::shared_ptr<Player>>& GetPlayers();
+	void DealCards(Deck& deck);
 };
 
