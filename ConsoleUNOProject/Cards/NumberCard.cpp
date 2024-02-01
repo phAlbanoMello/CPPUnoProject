@@ -1,7 +1,7 @@
 #include "NumberCard.h" 
 #include "CardFactory.h"
 
-NumberCard::NumberCard(CardArt cardArt, int number) : Card(cardArt), number(number)
+NumberCard::NumberCard(CardArt cardArt, int number) : Card(cardArt, std::to_string(number)), number(number)
 {
 }
 

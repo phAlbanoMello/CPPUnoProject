@@ -11,7 +11,7 @@ private:
 public:
 	Deck();
 	Deck(std::vector<std::shared_ptr<Card>> cards);
-	std::vector<std::shared_ptr<Card>>& GetDeck();
+	std::vector<std::shared_ptr<Card>>& GetCards();
 	void AddCard(std::shared_ptr<Card> card);
 	void ReceiveCards(std::vector<std::shared_ptr<Card>> incomingCards);
 	std::shared_ptr<Card> GetNextCard();

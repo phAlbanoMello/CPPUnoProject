@@ -6,6 +6,7 @@
 #include "../Utils/XMLReader.h"
 #include "../Cards/CardFactory.h"
 #include "PlayerService.h"
+#include "RulesService.h"
 #include <chrono>
 #include <random>
 #include <sstream>
@@ -62,7 +63,7 @@ void GameService::HandleMainMenu()
 }
 
 void GameService::DrawCards(const std::vector<std::shared_ptr<Card>>& cards) {
-    size_t frameCount = cards[0]->GetCardArt().cardArtStrings.size();
+    size_t frameCount = cards.back()->GetCardArt().cardArtStrings.size();
 
     for (size_t frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
         for (const auto& card : cards) {
@@ -75,65 +76,153 @@ void GameService::DrawCards(const std::vector<std::shared_ptr<Card>>& cards) {
 }
 
 void GameService::StartGame(GameSettings settings) {
-    currentGameSettings = settings;
     ConsoleService::Clear();
+    
+    // Setup players and cards -----------------------------------------------------------------
+    currentGameSettings = settings;
     PlayerService playerService = PlayerService{};
-
     playerService.CreatePlayers(currentGameSettings.NumberOfPlayers);
-
     std::vector<std::shared_ptr<Card>> allCards = CardFactory::CreateNumberCards();
+    
+    //Shuffle and Deal cards -------------------------------------------------------------------
     ShuffleVector(allCards);
     Deck allCardsDeck = Deck{ allCards };
     playerService.DealCards(allCardsDeck);
+ 
+    //Set first card of Discard Stack ----------------------------------------------------------
     discardStack.AddCard(allCardsDeck.GetNextCard());
-
-    std::vector<std::shared_ptr<Player>> players = playerService.GetPlayers();
-
-    ConsoleService::PrintDivisor();
-    for (size_t i = 0; i < players.size(); i++)
+    //Start Game Loop
+    bool playingGame = true;
+    int currentPlayerIndex = 0;
+    while (playingGame)
     {
-        if (players[i]->GetName() == "Player")
+        ConsoleService::Clear();
+        ConsoleService::PrintDivisor();
+        ConsoleService::Print(std::to_string(currentPlayerIndex));
+        ConsoleService::PrintDivisor();
+        //Print players Stats--------------------------------------------
+        std::vector<std::shared_ptr<Player>> players = playerService.GetPlayers();
+        PrintPlayersStats(players, currentPlayerIndex);
+
+        //Print Discard Stack Top Card------------------------------------
+        Card& currentCardOnTopOfDiscardStack = discardStack.CheckTopCard();
+        ConsoleService::PrintDivisor();
+        ConsoleService::Print("Discard Stack : ");
+        ConsoleService::PrintDivisor();
+        currentCardOnTopOfDiscardStack.DrawArt();
+
+        //Print Current Player's hand-------------------------------------
+        ConsoleService::PrintDivisor();
+        std::shared_ptr<Player> player = playerService.GetPlayers()[currentPlayerIndex];
+        ConsoleService::Print(player->GetName() + " Hand : ");
+        ConsoleService::PrintDivisor();
+        Deck& currentPlayerDeck = *player->GetHand();
+        DrawCards(currentPlayerDeck.GetCards());
+        ConsoleService::PrintDivisor();
+        //Check if player has cards to play----------------------------
+        if (HasPlayableCards(currentCardOnTopOfDiscardStack, player))
         {
+            //Print Index Menu------------------------------------------------
+            ConsoleService::Print("Select a card by it's order from left to right (Press the corresponding number)");
+            ConsoleService::Print(GenerateIndexMenuString(currentCardOnTopOfDiscardStack, player));
+            ConsoleService::PrintDivisor();
+            int chosenCardIndex = InputService::GetPlayerInputOfType<int>();
+            //Player will pick the index added by one because they are displayed as ordered numbers instead of actual index
+            int fixedCardIndexInput = chosenCardIndex - 1;
+            //Validate player Input----------------------------------------------
+            if (!RulesService::IsValidIndexInput(fixedCardIndexInput,
+                RulesService::GetPlayableCardsIndexes(std::make_shared<Card>(currentCardOnTopOfDiscardStack),player->GetHand()->GetCards())))
+            {
+                PrintInvalidInputMessage();
+                _getch();
+                continue;
+            }
+            //Validate card----------------Maybe this is pointless?--------------
+            if (RulesService::AreCardsCompatible(currentCardOnTopOfDiscardStack, *currentPlayerDeck.GetCards()[fixedCardIndexInput]))
+            {
+                auto& currentPlayerCards = currentPlayerDeck.GetCards();
+                discardStack.AddCard(currentPlayerCards[fixedCardIndexInput]);
+
+                currentPlayerCards.erase(currentPlayerCards.begin() + fixedCardIndexInput);
+
+                /*currentPlayerDeck.GetCards().pop_back();*/
+                //Update player index---------------------------------------------
+                currentPlayerIndex = currentPlayerIndex < players.size() - 1 ? currentPlayerIndex += 1 : 0;
+                _getch();
+                //TODO:Check turns stats with RulesService
+                continue;
+            }else{
+                PrintInvalidInputMessage();
+                _getch();
+                continue;
+            }
+        }
+        else{
+            //Print Buy a Card Message----------------------------------------
+            ConsoleService::Print(player->GetName() + " has no cards that can be placed. Press Enter to end the turn and buy a card.");
+            ConsoleService::PrintDivisor();
+            //-----------------------------------------------------------------
+            currentPlayerIndex = currentPlayerIndex < players.size() - 1 ? currentPlayerIndex += 1 : 0;
+            _getch();
+            //TODO:Check turns stats with RulesService
             continue;
         }
-        std::stringstream playerData;
-
-
-        if (players[i]->GetName() == "Jotaro Kujo")
-        {
-            playerData << " " << players[i]->GetName() << " - Hand : " << players[i]->GetHand()->GetDeck().size() << " <- Turn";
-            ConsoleService::PrintWithColor(playerData.str(), ConsoleColor::Yellow);
-        }
-        else {
-            playerData << players[i]->GetName() << " - Hand : " << players[i]->GetHand()->GetDeck().size();
-            ConsoleService::Print(playerData.str());
-        }
+        
     }
-    ConsoleService::PrintDivisor();
-    ConsoleService::Print("Discard Stack : ");
-    ConsoleService::PrintDivisor();
-    discardStack.CheckTopCard().DrawArt();
-    ConsoleService::PrintDivisor();
-    std::shared_ptr<Player> player = playerService.GetPlayers()[0];
-    ConsoleService::Print(player->GetName() + " Hand : ");
-    ConsoleService::PrintDivisor();
-    Deck& currentPlayerDeck = *player->GetHand();
-    std::stringstream indexMenu;
-    for (size_t i = 0; i < currentPlayerDeck.GetDeck().size(); i++)
-    {
-        indexMenu << "[" << std::to_string(i) <<"]";
-    }
-    //TODO: Make it only shows indexes of cards you can place
-    //what cards can you place?
 
-    DrawCards(currentPlayerDeck.GetDeck());
-    ConsoleService::PrintDivisor();
-    ConsoleService::Print("Select a card");
-    ConsoleService::Print(indexMenu.str());
-    ConsoleService::PrintDivisor();
 
     _getch();
 }
+
+void GameService::PrintInvalidInputMessage()
+{
+    ConsoleService::PrintDivisor();
+    ConsoleService::PrintWithColor("Invalid input!", ConsoleColor::Red);
+    ConsoleService::PrintDivisor();
+}
+
+void GameService::PrintPlayersStats(std::vector<std::shared_ptr<Player>>& players, int currentPlayerIndex)
+{
+    for (size_t i = 0; i < players.size(); i++)
+    {
+        std::stringstream playerData;
+        if (i == currentPlayerIndex)
+        {
+            playerData << " " << players[i]->GetName() << " - Hand : " << players[i]->GetHand()->GetCards().size() << " <- Turn";
+            ConsoleService::PrintWithColor(playerData.str(), ConsoleColor::Yellow);
+        }
+        else {
+            playerData << players[i]->GetName() << " - Hand : " << players[i]->GetHand()->GetCards().size();
+            ConsoleService::Print(playerData.str());
+        }
+    }
+}
+
+bool GameService::HasPlayableCards(Card& dStackTopCard, std::shared_ptr<Player> player) {
+    std::vector<int> playableCardsIndexes = RulesService::GetPlayableCardsIndexes(
+        std::make_shared<Card>(dStackTopCard),
+        player->GetHand()->GetCards()
+    );
+
+    return !playableCardsIndexes.empty();
+}
+
+std::string GameService::GenerateIndexMenuString(Card& dStackTopCard, std::shared_ptr<Player> player) {
+    std::stringstream indexMenu;
+
+    char orderSymbol = 248;
+    std::vector<int> playableCardsIndexes = RulesService::GetPlayableCardsIndexes(
+        std::make_shared<Card>(dStackTopCard),
+        player->GetHand()->GetCards()
+    );
+
+    for (size_t i = 0; i < playableCardsIndexes.size(); i++) {
+        indexMenu << "[" << playableCardsIndexes[i] + 1 << orderSymbol << "]";
+    }
+ 
+    return indexMenu.str();
+}
+
 
 void GameService::ShuffleVector(std::vector<std::shared_ptr<Card>>& allCards)
 {

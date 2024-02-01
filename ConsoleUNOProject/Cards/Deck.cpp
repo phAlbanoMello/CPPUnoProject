@@ -8,14 +8,17 @@ Deck::Deck(std::vector<std::shared_ptr<Card>> cards) : cards(cards)
 {
 }
 
-std::vector<std::shared_ptr<Card>>& Deck::GetDeck()
+std::vector<std::shared_ptr<Card>>& Deck::GetCards()
 {
 	return cards;
 }
 
 void Deck::AddCard(std::shared_ptr<Card> card)
 {
-	cards.push_back(card);
+	if (card)
+	{
+		cards.push_back(card);
+	}
 }
 
 void Deck::ReceiveCards(std::vector<std::shared_ptr<Card>> incomingCards)

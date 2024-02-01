@@ -1,7 +1,7 @@
 #include "Card.h"
 #include "CardFactory.h"
 
-Card::Card(CardArt cardArt) : cardArt(cardArt)
+Card::Card(CardArt cardArt, std::string value) : cardArt(cardArt), cardValue(value)
 {
 }
 
@@ -32,4 +32,9 @@ void Card::DrawArt() const
 CardArt Card::GetCardArt()
 {
 	return cardArt;
+}
+
+std::string Card::GetCardValue() const
+{
+	return cardValue;
 }
