@@ -30,7 +30,6 @@ bool RulesService::AreCardsCompatible(Card& discardStackCard, Card& otherCard)
 	CardValidationData cardAVData = CardValidationData{ discardStackCard.GetColor(), discardStackCard.GetCardValue() };
 	CardValidationData cardBVData = CardValidationData{ otherCard.GetColor(), otherCard.GetCardValue() };
 
-	//TODO: turn this into a overriden operator at Card  
 	return cardAVData == cardBVData;
 }
 
