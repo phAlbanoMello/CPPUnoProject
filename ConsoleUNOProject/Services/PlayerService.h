@@ -17,5 +17,7 @@ public:
 	void SetSettings(GameSettings settings);
 	std::vector<std::shared_ptr<Player>>& GetPlayers();
 	void DealCards(Deck& deck);
+	void ReversePlayersOrder();
+	void ShufflePlayers();
 };
 

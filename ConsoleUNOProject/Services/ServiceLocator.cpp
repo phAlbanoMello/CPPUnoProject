@@ -28,4 +28,14 @@ void ServiceLocator::Init()
     {
         service->Init();
     }
+
+    std::shared_ptr<GameService> gameService = GetService<GameService>();
+    std::shared_ptr<RulesService> rulesService = GetService<RulesService>();
+    std::shared_ptr<PlayerService> playerService = GetService<PlayerService>();
+
+    gameService->SetRulesService(rulesService);
+    gameService->SetPlayerServices(playerService);
+
+    gameService->MainMenu();
+    //TODO:Change this to SetDependencies?
 }

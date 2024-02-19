@@ -10,14 +10,17 @@ ConsoleColor Card::GetColor() const
 	return cardArt.color;
 }
 
-void Card::SetAction(std::function<void()> cardAction)
+void Card::SetAction(std::function<void(Turn&)> cardAction)
 {
-	action = std::make_shared<std::function<void()>>(cardAction);
+	action = std::make_shared<std::function<void(Turn&)>>(std::move(cardAction));
 }
 
-void Card::InvokeAction()
+void Card::InvokeAction(Turn& turn)
 {
-	(*action)();
+	if (action)
+	{
+		(*action)(turn);
+	}
 }
 
 void Card::PrintCardData()

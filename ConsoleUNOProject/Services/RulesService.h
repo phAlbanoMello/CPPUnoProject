@@ -5,6 +5,8 @@
 #include "../Cards/Card.h"
 #include "../Cards/Deck.h"
 
+class Rule;
+
 class CardValidationData {
 private:
     ConsoleColor color;
@@ -16,10 +18,13 @@ public:
 
 class RulesService : public Service
 {
+private:
+    std::vector<std::shared_ptr<Rule>> RegisteredRules;
 public:
     void Init() override;
     static std::vector<int> GetPlayableCardsIndexes(std::shared_ptr<Card> discardStackTopCard, std::vector<std::shared_ptr<Card>>& cards);
     static bool AreCardsCompatible(Card& discardStackCard, Card& otherCard);
     static bool IsValidIndexInput(int input, std::vector<int> playableCardsIndexes);
+    std::vector<std::string> GetActiveRulesList();
 };
 

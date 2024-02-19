@@ -5,6 +5,7 @@
 #include "InputService.h"
 #include "../Utils/XMLReader.h"
 #include "../Cards/CardFactory.h"
+#include "../Services/GameStateService.h"
 #include "PlayerService.h"
 #include "RulesService.h"
 #include <chrono>
@@ -21,20 +22,18 @@ void PrintKeyName(const char* keyName) {
 
 void GameService::Init()
 {
-	currentGameSettings = { 3, Medium };//Default
-
-	MainMenu();
+	currentGameSettings = { 3 };//Default;
 }
 
 void GameService::MainMenu()
 {
 	ConsoleService::Clear();
 	currentGameState = GameState::Menu;
-
+	LoadSettings();
 	ConsoleService::PrintWithColor("Welcome to UNO", ConsoleColor::Blue);
 	ConsoleService::PrintDivisor();
 
-	ConsoleService::PrintWithColor("Start Game (Default Settings) [" + std::string(1, startGameKeyString) + "]", ConsoleColor::Yellow);
+	ConsoleService::PrintWithColor("Start Game [" + std::string(1, startGameKeyString) + "]", ConsoleColor::Yellow);
 	ConsoleService::Print("Custom Settings [" + std::string(1, customSettingsString) + "]");
 	ConsoleService::Print("Exit [" + std::string(1, exitString) + "]");
 
@@ -63,6 +62,11 @@ void GameService::HandleMainMenu()
 	}
 }
 
+void GameService::SetRulesService(std::shared_ptr<RulesService> rulesService)
+{
+	_rulesService = rulesService;
+}
+
 void GameService::DrawCards(const std::vector<std::shared_ptr<Card>>& cards) {
 	if (cards.empty()) {
 		return;
@@ -84,6 +88,53 @@ void GameService::DrawCards(const std::vector<std::shared_ptr<Card>>& cards) {
 	}
 }
 
+std::shared_ptr<Player> GameService::CharacterSelection() {
+	std::vector<std::shared_ptr<Player>> players = _playerService->GetPlayers();
+	ConsoleService::Clear();
+	ConsoleService::PrintDivisor();
+	ConsoleService::Print("Select Your Character");
+	ConsoleService::PrintDivisor();
+	for (size_t i = 0; i < players.size(); i++)
+	{
+		ConsoleService::Print(players[i]->GetName() + " [" + std::to_string(i) + "]");
+	}
+	ConsoleService::PrintDivisor();
+	int characterIndex = InputService::GetPlayerInputOfType<int>();
+	ConsoleService::PrintDivisor();
+	ConsoleService::Clear();
+	ConsoleService::PrintDivisor();
+	ConsoleService::Print("Select Your Character");
+	ConsoleService::PrintDivisor();
+	for (size_t i = 0; i < players.size(); i++)
+	{
+		if (i == characterIndex)
+		{
+			ConsoleService::PrintWithColor(players[i]->GetName() + " [" + std::to_string(i) + "]", ConsoleColor::Yellow);
+			continue;
+		}
+		ConsoleService::Print(players[i]->GetName() + " [" + std::to_string(i) + "]");
+	}
+	ConsoleService::PrintDivisor();
+	ConsoleService::Print("Do you want to confirm " + players[characterIndex]->GetName() + " as your character?");
+	ConsoleService::PrintDivisor();
+	ConsoleService::Print(players[characterIndex]->GetStandDescription());
+	ConsoleService::PrintDivisor();
+	ConsoleService::Print("[Y]YES!YES!YES! / [N]NO!NO!NO!");
+	char input = InputService::GetPlayerInput();
+	switch (std::toupper(input))
+	{
+	case 'Y':
+		return players[characterIndex];
+	case 'N':
+		ConsoleService::Clear();
+		CharacterSelection();
+		break;
+	default:
+		ConsoleService::Clear();
+		CharacterSelection();
+		break;
+	}
+}
 
 void GameService::StartGame(GameSettings settings) {
 	ConsoleService::Clear();
@@ -91,41 +142,47 @@ void GameService::StartGame(GameSettings settings) {
 
 	// Setup players and cards -----------------------------------------------------------------
 	currentGameSettings = settings;
-	PlayerService playerService = PlayerService{};
-	playerService.CreatePlayers(currentGameSettings.NumberOfPlayers);
+	_playerService->CreatePlayers(currentGameSettings.NumberOfPlayers);
+
+	std::shared_ptr<Player> playerCharacter = CharacterSelection();
+	playerCharacter->SelectAsPlayerCharacter();
 	std::vector<std::shared_ptr<Card>> allCards = CardFactory::CreateNumberCards();
 
 	//Shuffle and Deal cards -------------------------------------------------------------------
-	ShuffleVector(allCards);
-	Deck allCardsDeck = Deck{ allCards };
-	playerService.DealCards(allCardsDeck);
+	ShuffleCards(allCards);
+	Deck drawPile = Deck{ allCards };
+	_playerService->DealCards(drawPile);
 
 	//Set first card of Discard Stack ----------------------------------------------------------
-	discardStack.AddCard(allCardsDeck.GetNextCard());
+	discardStack.AddCard(drawPile.GetNextCard());
 	//Start Game Loop
 	bool playingGame = true;
-	int currentPlayerIndex = 0;
-	while (playingGame)
+	GameStateService gameState = GameStateService(_playerService, discardStack, _rulesService);
+
+	while (playingGame && currentGameState == GameState::Playing)
 	{
+		size_t currentPlayerIndex = gameState.GetStateData().PlayerIndex;
 		ConsoleService::Clear();
-		ConsoleService::PrintDivisor();
-		std::vector<std::shared_ptr<Player>> players = playerService.GetPlayers();
+		std::vector<std::shared_ptr<Player>> players = _playerService->GetPlayers();
 		Card& currentCardOnTopOfDiscardStack = discardStack.CheckTopCard();
-		std::shared_ptr<Player> player = playerService.GetPlayers()[currentPlayerIndex];
+		std::shared_ptr<Player> player = _playerService->GetPlayers()[currentPlayerIndex];
 		Deck& currentPlayerHand = *player->GetHand();
-	
+		gameState.PrintBaseStateData();
+		PrintDrawPileAmount(drawPile);
 		PrintPlayersStats(players, currentPlayerIndex);
+		CheckForGameOver(playingGame);
+
 		PrintDiscardStackTopCard(currentCardOnTopOfDiscardStack);
 		PrintCurrentPlayerHand(player, currentPlayerHand);
-		
+
 		HandleGameOver();
 
 		if (HasPlayableCards(currentCardOnTopOfDiscardStack, player))
 		{
 			PrintPlayerInputInterface(currentCardOnTopOfDiscardStack, player);
 			int fixedCardIndexInput = InputService::GetPlayerInputOfType<int>() - 1;
-			
-			std::vector<int> playableCardsIndexes = RulesService::GetPlayableCardsIndexes(std::make_shared<Card>(currentCardOnTopOfDiscardStack), currentPlayerHand.GetCards());
+
+			std::vector<int> playableCardsIndexes = _rulesService->GetPlayableCardsIndexes(std::make_shared<Card>(currentCardOnTopOfDiscardStack), currentPlayerHand.GetCards());
 			if (!RulesService::IsValidIndexInput(fixedCardIndexInput, playableCardsIndexes))
 			{
 				PrintInvalidInputMessage();
@@ -135,26 +192,26 @@ void GameService::StartGame(GameSettings settings) {
 			if (RulesService::AreCardsCompatible(currentCardOnTopOfDiscardStack, *currentPlayerHand.GetCards()[fixedCardIndexInput]))
 			{
 				auto& currentPlayerCards = currentPlayerHand.GetCards();
-				discardStack.AddCard(currentPlayerCards[fixedCardIndexInput]);
 
+				discardStack.AddCard(currentPlayerCards[fixedCardIndexInput]);
 				currentPlayerCards.erase(currentPlayerCards.begin() + fixedCardIndexInput);
-				currentPlayerIndex = currentPlayerIndex < players.size() - 1 ? currentPlayerIndex += 1 : 0;
 
 				if (currentPlayerCards.size() == 1)
 				{
 					player->SetHasOneCard(true);
-					ConsoleService::PrintWithColor("You have one card! End your turn by shouting UNO! (Press [U] instead of [Enter])", ConsoleColor::Green);
+					ConsoleService::PrintWithColor("You'll be left with one card! End your turn by shouting UNO! (Press [U] instead of [Enter])", ConsoleColor::Green);
 					ConsoleService::PrintDivisor();
-					CheckUNOShout(player);
+					PrintConfirmationPromptWithShoutOption(player);
 				}
 				else
 				{
 					ConsoleService::PrintDivisor();
 					ConsoleService::Print("Confirm to finish your turn");
+					UpdatePlayerIndex(gameState);
 					_getch();
 					continue;
 				}
-				//TODO:Check turns stats with RulesService
+
 			}
 			else {
 				PrintInvalidInputMessage();
@@ -165,15 +222,51 @@ void GameService::StartGame(GameSettings settings) {
 		else {
 			ConsoleService::Print(player->GetName() + " has no cards that can be placed. Press Enter to end the turn and buy a card.");
 			ConsoleService::PrintDivisor();
-			currentPlayerHand.AddCard(allCardsDeck.GetNextCard());
-			currentPlayerIndex = currentPlayerIndex < players.size() - 1 ? currentPlayerIndex += 1 : 0;
+			_getch();
+			if (drawPile.GetCards().size() > 0)
+			{
+				currentPlayerHand.AddCard(drawPile.GetNextCard());
+				ConsoleService::Print(player->GetName() + " bought one card from the Draw Pile.");
+			}
+			else {
+				ConsoleService::Print(" There are no cards on the DrawPile, the player must end it's turn.");
+			}
+
 			ConsoleService::PrintDivisor();
 			ConsoleService::Print("Confirm to finish your turn");
 			_getch();
+			UpdatePlayerIndex(gameState);
 			continue;
 		}
+
 	}
 	_getch();
+}
+
+void GameService::SetPlayerServices(std::shared_ptr<PlayerService> playerService)
+{
+	_playerService = playerService;
+}
+
+void GameService::UpdatePlayerIndex(GameStateService& gameState)
+{
+	gameState.UpdateCurrentPlayerIndex();
+	//currentPlayerIndex = currentPlayerIndex < players.size() - 1 ? currentPlayerIndex += 1 : 0;
+}
+
+void GameService::CheckForGameOver(bool& playingGame)
+{
+	if (currentGameState == GameState::GameOver)
+	{
+		playingGame = false;
+	}
+}
+
+void GameService::PrintDrawPileAmount(Deck& drawPile)
+{
+	ConsoleService::PrintDivisor();
+	ConsoleService::Print("Draw Pile cards: " + std::to_string(drawPile.GetCards().size()));
+	ConsoleService::PrintDivisor();
 }
 
 void GameService::PrintCurrentPlayerHand(std::shared_ptr<Player>& player, Deck& currentPlayerHand)
@@ -213,7 +306,7 @@ void GameService::HandleGameOver()
 	}
 }
 
-void GameService::CheckUNOShout(std::shared_ptr<Player>& player) {
+void GameService::PrintConfirmationPromptWithShoutOption(std::shared_ptr<Player>& player) {
 	if (player->GetHasOneCard()) {
 		ConsoleService::PrintDivisor();
 		ConsoleService::Print("Confirm to finish your turn");
@@ -221,6 +314,17 @@ void GameService::CheckUNOShout(std::shared_ptr<Player>& player) {
 		char input = _getch();
 		player->SetShout(std::toupper(input) == 'U');
 	}
+}
+
+void GameService::SaveSettings()
+{
+	XMLReader xmlReader = XMLReader(SETTINGS_FILE_PATH);
+	xmlReader.saveGameSettings(currentGameSettings);
+}
+
+void GameService::LoadSettings() {
+	XMLReader xmlReader = XMLReader(SETTINGS_FILE_PATH);
+	currentGameSettings = xmlReader.loadGameSettings();
 }
 
 void GameService::PrintInvalidInputMessage()
@@ -245,12 +349,25 @@ void GameService::PrintPlayersStats(std::vector<std::shared_ptr<Player>>& player
 		if (i == currentPlayerIndex)
 		{
 			playerData << " " << players[i]->GetName() << " - Hand : " << players[i]->GetHand()->GetCards().size() << " <- Turn" << unoShout;
-			ConsoleService::PrintWithColor(playerData.str(), ConsoleColor::Yellow);
+			if (players[i]->GetIsPlayerCharacter())
+			{
+				ConsoleService::PrintWithColor(playerData.str(), ConsoleColor::Blue);
+			}
+			else {
+				ConsoleService::PrintWithColor(playerData.str(), ConsoleColor::Yellow);
+			}
 		}
 		else {
 			playerData << players[i]->GetName() << " - Hand : " << players[i]->GetHand()->GetCards().size() << unoShout;
-			ConsoleService::Print(playerData.str());
+			if (players[i]->GetIsPlayerCharacter())
+			{
+				ConsoleService::PrintWithColor(playerData.str(), ConsoleColor::Blue);
+			}
+			else {
+				ConsoleService::Print(playerData.str());
+			}
 		}
+
 	}
 }
 
@@ -280,7 +397,7 @@ std::string GameService::GenerateIndexMenuString(Card& dStackTopCard, std::share
 }
 
 
-void GameService::ShuffleVector(std::vector<std::shared_ptr<Card>>& allCards)
+void GameService::ShuffleCards(std::vector<std::shared_ptr<Card>>& allCards)
 {
 	const unsigned int seed = static_cast<unsigned>(std::chrono::system_clock::now().time_since_epoch().count());
 	auto rng = std::default_random_engine{ seed };
@@ -290,13 +407,12 @@ void GameService::ShuffleVector(std::vector<std::shared_ptr<Card>>& allCards)
 void GameService::SettingsMenu() {
 	ConsoleService::Clear();
 	currentGameState = GameState::Settings;
-
+	LoadSettings();
 	ConsoleService::PrintWithColor("Custom Settings", ConsoleColor::Blue);
 	ConsoleService::PrintDivisor(2);
 	ConsoleService::PrintWithColor("Press the corresponding key to edit the value", ConsoleColor::Yellow);
 	ConsoleService::PrintDivisor(2);
-	ConsoleService::Print("Number of Players (Besides You) : " + std::to_string(currentGameSettings.NumberOfPlayers) + " [N]");
-	ConsoleService::Print("Difficulty : " + GetDifficultyString() + " [D]");
+	ConsoleService::Print("Number of Players : " + std::to_string(currentGameSettings.NumberOfPlayers) + " [N]");
 	ConsoleService::PrintDivisor();
 	ConsoleService::Print("(Press Enter to Return)");
 
@@ -308,13 +424,18 @@ void GameService::SettingsMenu() {
 		ConsoleService::Print("Enter the total amount of players (min 2 max 10):");
 		int input;
 		std::cin >> input;
+
+		if (input < 2 || input > 10)
+		{
+			ConsoleService::PrintDivisor();
+			ConsoleService::PrintWithColor("Invalid Amount of Players", ConsoleColor::Red);
+			_getch();
+			SettingsMenu();
+			break;
+		}
 		currentGameSettings.NumberOfPlayers = input;
+		SaveSettings();
 		SettingsMenu();
-		break;
-	case 'D':
-		ConsoleService::PrintDivisor();
-		ConsoleService::Print("Select a Difficulty [E]Easy, [M]Medium, [H]Hard");
-		SetDifficultySetting(_getch());
 		break;
 	case '\n':
 		MainMenu();
@@ -322,40 +443,5 @@ void GameService::SettingsMenu() {
 	default:
 		break;
 	}
-}
-
-void GameService::SetDifficultySetting(char input)
-{
-	switch (std::toupper(input))
-	{
-	case 'E':
-		currentGameSettings.Difficulty = Easy;
-		break;
-	case 'M':
-		currentGameSettings.Difficulty = Medium;
-		break;
-	case 'H':
-		currentGameSettings.Difficulty = Hard;
-		break;
-	default:
-		break;
-	}
-	SettingsMenu();
-}
-
-std::string GameService::GetDifficultyString() {
-	switch (currentGameSettings.Difficulty)
-	{
-	case GameDifficulty::Easy:
-		return "Easy";
-		break;
-	case GameDifficulty::Medium:
-		return "Medium";
-		break;
-	case GameDifficulty::Hard:
-		return "Hard";
-		break;
-	default:
-		break;
-	}
+	SaveSettings();
 }

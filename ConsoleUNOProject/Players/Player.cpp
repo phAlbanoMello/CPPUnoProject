@@ -5,35 +5,49 @@ Player::Player()
 {
 }
 
-Player::Player(std::string name) : name(name)
+Player::Player(std::string name, std::string standDescription) : _name(name), _standDescription(standDescription)
 {
 }
 
 std::string& Player::GetName()
 {
-    return name;
+    return _name;
 }
 
 bool Player::GetHasShoutedUNO() const
 {
-    return hasShoutedUNO;
+    return _hasShoutedUNO;
 }
 
 void Player::SetShout(bool value) {
-    hasShoutedUNO = value;
+    _hasShoutedUNO = value;
 }
 
 void Player::SetHasOneCard(bool value)
 {
-    hasOneCard = value;
+    _hasOneCard = value;
+}
+
+void Player::SelectAsPlayerCharacter()
+{
+    _isPlayerCharacter = true;
 }
 
 bool Player::GetHasOneCard() const
 {
-    return hasOneCard;
+    return _hasOneCard;
+}
+
+bool Player::GetIsPlayerCharacter()
+{
+    return _isPlayerCharacter;
 }
 
 std::shared_ptr<Deck>& Player::GetHand()
 {
-    return hand;
+    return _hand;
+}
+
+std::string Player::GetStandDescription() {
+    return _standDescription;
 }

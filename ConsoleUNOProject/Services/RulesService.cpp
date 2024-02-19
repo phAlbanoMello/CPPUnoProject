@@ -1,11 +1,11 @@
 #include "RulesService.h"
+#include "../Rules/Rule.h"
 
 void RulesService::Init()
 {
+	RegisteredRules = {};
 }
-CardValidationData::CardValidationData(ConsoleColor color, std::string numberString) : color(color), number(numberString)
-{
-}
+CardValidationData::CardValidationData(ConsoleColor color, std::string numberString) : color(color), number(numberString){}
 
 std::vector<int> RulesService::GetPlayableCardsIndexes(std::shared_ptr<Card> discardStackTopCard, std::vector<std::shared_ptr<Card>>& cards)
 {
@@ -43,6 +43,19 @@ bool RulesService::IsValidIndexInput(int input, std::vector<int> playableCardsIn
 		}
 	}
 	return false;
+}
+
+std::vector<std::string> RulesService::GetActiveRulesList()
+{
+	std::vector<std::string> ruleIds = {};
+	for (std::shared_ptr<Rule>& rule : RegisteredRules)
+	{
+		if (rule->isActive())
+		{
+			ruleIds.push_back(rule->GetRuleID());
+		}
+	}
+	return ruleIds;
 }
 
 

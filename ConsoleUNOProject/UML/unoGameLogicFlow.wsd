@@ -1,0 +1,123 @@
+@startuml UnoGameLogicFlow
+
+title UNO Game Logic Flow
+
+package LoadingMatch {
+    class GameStart
+    class Factories
+    class CardsAndPlayersCreated
+    class CreatingNumberCards
+    class CreatingSpecialCards
+    class CreatingPlayers
+    class DealingCards
+    class AddCardToDiscardStack
+    class StartGameLoop
+
+    GameStart --> Factories
+    Factories --> CreatingNumberCards
+    Factories --> CreatingSpecialCards
+    Factories --> CreatingPlayers
+    CreatingNumberCards --> CardsAndPlayersCreated
+    CreatingSpecialCards --> CardsAndPlayersCreated
+    CreatingPlayers --> CardsAndPlayersCreated
+    CardsAndPlayersCreated --> DealingCards
+    DealingCards --> AddCardToDiscardStack
+    AddCardToDiscardStack --> StartGameLoop
+}
+package Playing {
+    package "Loading Turn Data"{
+        class GetCollectionOfPlayers
+        class GetDiscardStackTopCard
+        class GetCurrentPlayer
+        class GetCurrentPlayerHand
+        StartGameLoop --> GetCollectionOfPlayers
+        GetCollectionOfPlayers --> GetDiscardStackTopCard
+        GetDiscardStackTopCard --> GetCurrentPlayer
+        GetCurrentPlayer --> GetCurrentPlayerHand
+    }
+    package "Printing Turn Data"{
+        class PrintDrawPileAmount
+        class PrintPlayerStats
+        class CheckForGameOver
+        class PrintCurrentPlayerHand
+        GetCurrentPlayerHand --> PrintDrawPileAmount
+        PrintDrawPileAmount --> PrintPlayerStats
+        PrintPlayerStats --> CheckForGameOver
+        CheckForGameOver --> PrintCurrentPlayerHand
+    }
+    package "Handling Player Input"{
+        class CheckIfPlayerHasPlayableCards << (C, #FF7700) Condition >> 
+        class ValidInput
+        class InvalidInput
+        class CardChoiceMatch
+        class CardChoiceDoesntMatch
+        class PrintInvalidInputMessage
+        class PrintInputInterface
+        class GetPlayableCardsIndexes
+        class CheckIfPlayerInputMatchesPlayableCard << (C, #FF7700) Condition >> 
+        class RetryLoop
+        class AddChosenCardToDiscardStack
+        class EraseCardFromHand
+        class UpdatePlayerIndex
+        class CheckIfInputIsValid << (C, #FF7700) Condition >> 
+        class CheckIfPlayerHasASingleCard << (C, #FF7700) Condition >> 
+        class PlayerHasSingleCard
+        class PlayerHasMoreThenOneCard
+        class HasPlayableCards
+        class HasntPlayableCards
+        class PrintMessageToBuyACard
+        class CheckIfDrawPileIsEmpty << (C, #FF7700) Condition >> 
+        class IsEmpty
+        class IsNotEmpty
+        class PrintConfirmToEndTurnPrompt
+        class AddCardfromDrawPileToPlayerHand
+        class FinishTurn
+
+        PrintCurrentPlayerHand --> CheckIfPlayerHasPlayableCards
+        CheckIfPlayerHasPlayableCards --> HasPlayableCards
+        CheckIfPlayerHasPlayableCards --> HasntPlayableCards 
+        HasPlayableCards --> GetPlayableCardsIndexes
+        HasntPlayableCards --> PrintMessageToBuyACard
+        PrintMessageToBuyACard --> CheckIfDrawPileIsEmpty
+        CheckIfDrawPileIsEmpty --> IsEmpty
+        CheckIfDrawPileIsEmpty --> IsNotEmpty
+        IsEmpty --> PrintConfirmToEndTurnPrompt
+        IsNotEmpty --> AddCardfromDrawPileToPlayerHand
+        AddCardfromDrawPileToPlayerHand --> UpdatePlayerIndex
+        UpdatePlayerIndex --> FinishTurn
+
+        GetPlayableCardsIndexes --> PrintInputInterface
+        PrintInputInterface --> CheckIfInputIsValid
+        CheckIfInputIsValid --> ValidInput
+        CheckIfInputIsValid --> InvalidInput
+        ValidInput --> CheckIfPlayerInputMatchesPlayableCard
+        InvalidInput --> PrintInvalidInputMessage
+        PrintInvalidInputMessage --> RetryLoop
+        CheckIfPlayerInputMatchesPlayableCard --> CardChoiceMatch
+        CheckIfPlayerInputMatchesPlayableCard --> CardChoiceDoesntMatch
+        CardChoiceMatch --> AddChosenCardToDiscardStack
+        AddChosenCardToDiscardStack --> EraseCardFromHand
+        EraseCardFromHand --> CheckIfPlayerHasASingleCard
+        CheckIfPlayerHasASingleCard --> PlayerHasSingleCard
+        CheckIfPlayerHasASingleCard --> PlayerHasMoreThenOneCard
+        PlayerHasSingleCard --> SetHasOneCardBool
+        SetHasOneCardBool --> PrintUNOWarning
+        PrintUNOWarning --> PrintConfirmationPromptWithUNOOption
+        PrintConfirmationPromptWithUNOOption --> UpdatePlayerIndex
+        PlayerHasMoreThenOneCard --> PrintConfirmToEndTurnPrompt
+        PrintConfirmToEndTurnPrompt --> UpdatePlayerIndex
+        CardChoiceDoesntMatch --> PrintInvalidInputMessage
+    }
+}
+'-------------------------------------------
+skinParam TitleFontSize 32
+skinparam backgroundColor Teal
+skinParam ClassBackgroundColor DarkSlateGrey
+skinParam DefaultFontColor White
+skinParam ClassFontColor SkyBlue
+skinParam ArrowColor LightSkyBlue 
+skinparam DefaultFontSize 25
+skinparam DefaultFontName Roboto
+skinParam ClassAttributeColor Black
+
+@enduml

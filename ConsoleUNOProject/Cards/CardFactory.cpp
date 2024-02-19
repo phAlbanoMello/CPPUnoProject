@@ -1,11 +1,12 @@
 #include "CardFactory.h"
+#include "../Components/Turn.h"
 
 std::shared_ptr<std::string> CreateFrameString(const std::string& frame) {
     std::shared_ptr<std::string> frameString = std::make_shared<std::string>(frame);
     return frameString;
 }
 
-CardArt CardFactory::MakeNumberCardArt(int value, ConsoleColor color) {
+CardArt CardFactory::MakeCardArt(const std::string value, ConsoleColor color) {
     CardArt cardArt;
 
     std::string borderFrame = "|======|";
@@ -13,7 +14,7 @@ CardArt CardFactory::MakeNumberCardArt(int value, ConsoleColor color) {
     std::string valueFrame = "|  {0}   |";
 
     size_t valuePos = valueFrame.find("{0}");
-    valueFrame.replace(valuePos, 3, std::to_string(value));
+    valueFrame.replace(valuePos, 3, value);
 
     std::string colorizedBodyFrame = "|" + GetColorName(color) + "|";
 
@@ -49,10 +50,19 @@ std::string CardFactory::GetColorName(ConsoleColor color) {
 
 std::shared_ptr<NumberCard> CardFactory::CreateNumberCard(int value, ConsoleColor color)
 {
-    CardArt art = MakeNumberCardArt(value, color);
+    CardArt art = MakeCardArt(std::to_string(value), color);
     NumberCard numberCard = NumberCard{ art, value };
+    
+    numberCard.SetAction([](Turn& turn) {
+        turn.Next();
+        });
+
     return std::make_shared<NumberCard>(numberCard);
 }
+//TODO:SPECIAL CARDS!!!!!
+//std::shared_ptr<NumberCard> CardFactory::CreateSpecialCard(Card cardType, ConsoleColor color, std::function<void> action){
+//
+//}
 
 std::vector<std::shared_ptr<Card>> CardFactory::CreateNumberCards(){
     std::vector<std::shared_ptr<Card>> numberCards;
