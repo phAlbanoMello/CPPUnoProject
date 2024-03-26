@@ -26,5 +26,6 @@ public:
     static bool AreCardsCompatible(Card& discardStackCard, Card& otherCard);
     static bool IsValidIndexInput(int input, std::vector<int> playableCardsIndexes);
     std::vector<std::string> GetActiveRulesList();
+    void RegisterRule(std::shared_ptr<Rule> rule);
 };
 

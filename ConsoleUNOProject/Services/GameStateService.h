@@ -24,14 +24,21 @@ private:
 	std::vector<std::shared_ptr<Player>>& _matchPlayers;
 	BaseStateData _stateData;
 	std::vector<std::string> _activeRulesIds;
+
+	Deck& _discardStack;
+	Deck& _drawPile;
+
 	std::string ConsoleColorToString(ConsoleColor color);
 	std::string GameFlowDirectionToString(GameFlowDirection direction);
 public:
-	GameStateService(std::shared_ptr<PlayerService> playerService, Deck& discardStack, std::shared_ptr<RulesService> rulesService);
+	GameStateService(std::shared_ptr<PlayerService> playerService, Deck& discardStack, Deck& drawPile, std::shared_ptr<RulesService> rulesService);
 	void UpdateCurrentPlayerIndex(int skipAmount = 0);
 	void ChangeGameColor(ConsoleColor color);
 	void ChangeFlowDirection(GameFlowDirection flowDirection);
 	void PrintBaseStateData();
 	BaseStateData GetStateData();
+
+	inline Deck& GetDiscardStack() { return _discardStack; };
+	inline Deck& GetDrawPile() { return _drawPile; };
 };
 

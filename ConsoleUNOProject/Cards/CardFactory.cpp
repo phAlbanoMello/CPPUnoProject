@@ -53,10 +53,6 @@ std::shared_ptr<NumberCard> CardFactory::CreateNumberCard(int value, ConsoleColo
     CardArt art = MakeCardArt(std::to_string(value), color);
     NumberCard numberCard = NumberCard{ art, value };
     
-    numberCard.SetAction([](Turn& turn) {
-        turn.Next();
-        });
-
     return std::make_shared<NumberCard>(numberCard);
 }
 //TODO:SPECIAL CARDS!!!!!

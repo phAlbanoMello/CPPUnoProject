@@ -7,25 +7,25 @@ SpecialCard::SpecialCard(GameStateService& gsService, CardArt cardArt, std::stri
 
 void SpecialCard::PrintCardData()
 {
-	ConsoleService::Print(CardFactory::GetColorName(cardArt.color));
-	ConsoleService::Print(cardValue);
+	ConsoleService::Print(CardFactory::GetColorName(_cardArt.color));
+	ConsoleService::Print(_cardValue);
 }
 
 void SpecialCard::DrawArt() const
 {
-	for (const auto& frame : cardArt.cardArtStrings) {
-		ConsoleService::PrintWithColor(*frame, cardArt.color);
+	for (const auto& frame : _cardArt.cardArtStrings) {
+		ConsoleService::PrintWithColor(*frame, _cardArt.color);
 	}
 }
 
 CardArt SpecialCard::GetCardArt() const
 {
-	return cardArt;
+	return _cardArt;
 }
 
 std::string SpecialCard::GetCardValue() const
 {
-	return cardValue;
+	return _cardValue;
 }
 
 void SpecialCard::Activate()

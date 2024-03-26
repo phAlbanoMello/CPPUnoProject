@@ -22,8 +22,8 @@ Dio stops time and has two choices:
 		<Name>Gyro</Name>
 		<StandPowerDescription>
 Ball Breaker
-Gyro chooses another player and throws them one card from his hand. 
-The player must draw cards from the draw pile until they get a card of the same color as the one that Gyro threw at them (Maximum 4 cards). 
+Gyro chooses another player and throws them one card from his hand.
+The player must draw cards from the draw pile until they get a card of the same color as the one that Gyro threw at them (Maximum 4 cards).
 The card thrown by Gyro cannot be played by the other player and will return to him on the targeted players turn.
 		</StandPowerDescription>
 	</Character>
@@ -31,12 +31,12 @@ The card thrown by Gyro cannot be played by the other player and will return to 
 		<Name>Giorno</Name>
 		<StandPowerDescription>
 Golden Experience
-Giorno transforms one of his Number Cards into a Special Card of his choice. 
-After performing this action and placing the Special Card, 
-if he is targeted by any action of other players in the next turn, 
+Giorno transforms one of his Number Cards into a Special Card of his choice.
+After performing this action and placing the Special Card,
+if he is targeted by any action of other players in the next turn,
 the effects will be reversed back to the opponent.
-Requiem: If Giorno enters UNO state after using this ability, 
-and if he is targeted by another player on the next turn, 
+Requiem: If Giorno enters UNO state after using this ability,
+and if he is targeted by another player on the next turn,
 the action performed by the opponent will keep reflecting back to him each turn for the rest of the match.
 		</StandPowerDescription>
 	</Character>
@@ -44,13 +44,13 @@ the action performed by the opponent will keep reflecting back to him each turn 
 		<Name>Leone Abbacchio</Name>
 		<StandPowerDescription>
 Moody Blues
-Leone revives a specific memory from the match, forcing a player, 
+Leone revives a specific memory from the match, forcing a player,
 or himself, to redo the same play as before. This will happen as follows:
-- If he says a player must redo some card placing, and the player doesnt have the same card in hand, 
-the first player who has it, in a reverse clockwise direction from Leone, 
-must give the card to the selected player so they can perform the same movement again when their next turn arrives, 
-losing their original choice of movement. 
-If no player has the required card, the target must buy a card from the draw pile. 
+- If he says a player must redo some card placing, and the player doesnt have the same card in hand,
+the first player who has it, in a reverse clockwise direction from Leone,
+must give the card to the selected player so they can perform the same movement again when their next turn arrives,
+losing their original choice of movement.
+If no player has the required card, the target must buy a card from the draw pile.
 (This is considered a failed attempt to use the stand, but still has its uses...)
 - If he chooses to repeat himself, he must have a card with the same color or number (or special effect) as the action he wants to repeat. If he does, he can place this card regardless of the card on the discard stack. (The same goes for the targeted player).
 		</StandPowerDescription>
@@ -61,11 +61,11 @@ If no player has the required card, the target must buy a card from the draw pil
 D4C (Dirty Deeds Done Dirt Cheap)
 Valentine opens a dimensional rift and jumps to a different dimension.
 The following events will occur:
-- In this new reality, the players have a different disposition. 
+- In this new reality, the players have a different disposition.
 First, all players positions are shuffled, then, Valentines hand and the two players at his sides before the shuffle will have their hands randomly swapped between themselves.
 - Each new jump will remove a card from Valentines hand and add it to a random player after the jump, unless he has two or fewer cards in hand.
 - If he has 6 or more cards, the "Love Train" effect is triggered.
-- For the next 3 turns, Valentine can place any card of any number or color. 
+- For the next 3 turns, Valentine can place any card of any number or color.
 Additionally, any attack will be deflected to the two players with fewer cards in hand while this effect is active. (Love Train can only be activated once per match).
 		</StandPowerDescription>
 	</Character>
@@ -73,8 +73,8 @@ Additionally, any attack will be deflected to the two players with fewer cards i
 		<Name>Ringo Roadagain</Name>
 		<StandPowerDescription>
 Mandom
-Ringo turns back time three turns: He reverts the cards placed on the last three turns back to the players that placed them, 
-and then he plays his card, and the game flow resumes as usual. 
+Ringo turns back time three turns: He reverts the cards placed on the last three turns back to the players that placed them,
+and then he plays his card, and the game flow resumes as usual.
 If the cards placed were special cards, any special effects will be reversed too.
 		</StandPowerDescription>
 	</Character>
@@ -93,21 +93,60 @@ Kira implants a bomb in a card and sends it to the draw pile. If a player buys t
 
 Killer Queen Bites the Dust:
 
-Bites the Dust activation will force the target player to buy 6 cards either from the draw pile, 
-discard pile, or a card from each player in a counterclockwise direction until it makes 6 cards. 
+Bites the Dust activation will force the target player to buy 6 cards either from the draw pile,
+discard pile, or a card from each player in a counterclockwise direction until it makes 6 cards.
 Bites the Dust can only be activated once per round.
 
 Kira selects a player. During this round Bites the Dust will be activated :
 -If a player enters the UNO state, and announces it.
--If a player announces that another player hasn’t shouted UNO.
+-If a player announces that another player hasnt shouted UNO.
 -If a player uses a stand power
 -If a player places a Special Card
 
 Bites the Dust effect can be reverted by any time reverting stand or reflecting/deflecting power.
 If the victim has at least one Skip card, this can be used to nullify the stand effect.
 (The Skip card must be discarded).
-If player’s cards are being collected to make the 6 cards and a player would enter the UNO state by giving the card, 
+If players cards are being collected to make the 6 cards and a player would enter the UNO state by giving the card,
 he will be skipped of the cards collecting effect.
 		</StandPowerDescription>
+	</Character>
+	<Character>
+		<Name>Enrico Pucci</Name>
+		<StandPowerDescription>
+White Snake
+
+Pucci selects a player. If they have special cards, those cards must be placed face down in front of the player (they become inactive). 
+Inactive cards count as part of the players hand and wont allow a player to enter the UNO state. 
+
+While its not the victims turn, whenever someone else uses a special card of the same type as the face down card, 
+the victim may announce it, and the effect will be applied twice. 
+Anyone can challenge the victims announcement. 
+If they guess correctly, the victim must draw two cards, and the card remains inactive. 
+If they guess incorrectly, they also have to draw two cards, and the effect will happen twice. 
+After that, the card returns to the owners hand. (No one can see which card was placed face down).
+If Pucci manages to get at least one card inactive for each player once, 
+or three players with inactive cards at the same time, Made In Heaven is activated.
+
+Made in Heaven : Time Is About to Speed Up
+
+During Made in Heaven, players (except Pucci) have a time limit to place their cards equal 
+to the amount of players in game, reduced by one each round. During Made In Heaven effect, 
+Pucci is able to place cards at other players turns if he has a card of the same number or color. 
+
+Doing this will jump to the next round and decrease the amount of time each player has to place.
+
+Made In Heaven lasts until one of these conditions are met :
+
+- Pucci enters UNO state, even if he doesnt announce it. 
+- Happy Valentine D4C is activated
+- Dio or Jotaros The World are activated.
+
+If Giorno enters UNO state while Made In Heaven is active, 
+and Pucci tries to cut him by placing a card before his turn, 
+Pucci has to buy three cards, loses the ability of cutting players 
+and becomes vulnerable to Made In Heavens time limit effect.
+If a player fails to place a card within the time limit, the their turn is skipped.
+
+	</StandPowerDescription>
 	</Character>
 </CharacterList>

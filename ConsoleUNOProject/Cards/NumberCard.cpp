@@ -7,12 +7,12 @@ NumberCard::NumberCard(CardArt cardArt, int number) : Card(cardArt, std::to_stri
 
 CardArt NumberCard::GetCardArt() const
 {
-    return cardArt;
+    return _cardArt;
 }
 
 void NumberCard::DrawArt() const {
-    for (const auto& frame : cardArt.cardArtStrings) {
-        ConsoleService::PrintWithColor(*frame, cardArt.color);
+    for (const auto& frame : _cardArt.cardArtStrings) {
+        ConsoleService::PrintWithColor(*frame, _cardArt.color);
     }
 }
 
@@ -23,6 +23,6 @@ int NumberCard::GetNumber() const
 
 void NumberCard::PrintCardData()
 {
-    ConsoleService::Print(CardFactory::GetColorName(cardArt.color));
+    ConsoleService::Print(CardFactory::GetColorName(_cardArt.color));
     ConsoleService::Print(std::to_string(number));
 }

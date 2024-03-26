@@ -1,31 +1,31 @@
 #include "Card.h"
 #include "CardFactory.h"
 
-Card::Card(CardArt cardArt, std::string value) : cardArt(cardArt), cardValue(value)
+Card::Card(CardArt cardArt, std::string value) : _cardArt(cardArt), _cardValue(value)
 {
 }
 
 ConsoleColor Card::GetColor() const
 {
-	return cardArt.color;
+	return _cardArt.color;
 }
 
-void Card::SetAction(std::function<void(Turn&)> cardAction)
+void Card::SetAction(std::function<void(GameStateService&)> cardAction)
 {
-	action = std::make_shared<std::function<void(Turn&)>>(std::move(cardAction));
+	_action = std::make_shared<std::function<void(GameStateService&)>>(std::move(cardAction));
 }
 
-void Card::InvokeAction(Turn& turn)
+void Card::InvokeAction()
 {
-	if (action)
+	if (_action)
 	{
-		(*action)(turn);
+		_action();
 	}
 }
 
 void Card::PrintCardData()
 {
-	ConsoleService::Print(CardFactory::GetColorName(cardArt.color));
+	ConsoleService::Print(CardFactory::GetColorName(_cardArt.color));
 }
 
 void Card::DrawArt() const
@@ -34,10 +34,10 @@ void Card::DrawArt() const
 
 CardArt Card::GetCardArt()
 {
-	return cardArt;
+	return _cardArt;
 }
 
 std::string Card::GetCardValue() const
 {
-	return cardValue;
+	return _cardValue;
 }

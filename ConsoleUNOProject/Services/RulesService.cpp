@@ -58,6 +58,11 @@ std::vector<std::string> RulesService::GetActiveRulesList()
 	return ruleIds;
 }
 
+void RulesService::RegisterRule(std::shared_ptr<Rule> rule)
+{
+	RegisteredRules.push_back(rule);
+}
+
 
 bool CardValidationData::operator==(const CardValidationData other) const
 {

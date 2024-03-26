@@ -1,20 +1,22 @@
 #include "GameStateService.h"
 
-GameStateService::GameStateService(std::shared_ptr<PlayerService> playerService, Deck& discardStack, std::shared_ptr<RulesService> rulesService)
+GameStateService::GameStateService(std::shared_ptr<PlayerService> playerService, Deck& discardStack, Deck& drawPile, std::shared_ptr<RulesService> rulesService)
 	: _matchPlayers(playerService->GetPlayers()),
 	_stateData{ 0, 0, 1, discardStack.CheckTopCard().GetColor(), 
 	GameFlowDirection::Clockwise },
-	_activeRulesIds(rulesService->GetActiveRulesList()){}
-
+	_activeRulesIds(rulesService->GetActiveRulesList()),
+	_discardStack(discardStack),
+	_drawPile(drawPile)
+{}
 void GameStateService::UpdateCurrentPlayerIndex(int skipAmount) {
-	if (skipAmount == 0) {
+	if (skipAmount == 0) { //Update to next player index regularly
 		_stateData.PreviousPlayerIndex = _stateData.PlayerIndex;
 		_stateData.PlayerIndex = (_stateData.PlayerIndex + 1) % _matchPlayers.size();
 		_stateData.NextPlayerIndex = (_stateData.PlayerIndex + 1) % _matchPlayers.size();
 	}
-	else {
+	else {//Update the players index skipping the provided amount
 		_stateData.PreviousPlayerIndex = _stateData.PlayerIndex;
-		_stateData.PlayerIndex = (_stateData.PlayerIndex + skipAmount) % _matchPlayers.size();
+		_stateData.PlayerIndex = (_stateData.PlayerIndex + 1 + skipAmount) % _matchPlayers.size();
 		_stateData.NextPlayerIndex = (_stateData.PlayerIndex + 1) % _matchPlayers.size();
 	}
 }

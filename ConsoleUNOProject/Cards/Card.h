@@ -5,6 +5,8 @@
 #include <vector>
 #include "../Components/Turn.h"
 
+class GameStateService;
+
 struct CardArt {
 	std::vector<std::shared_ptr<std::string>> cardArtStrings;
 	ConsoleColor color;
@@ -13,14 +15,14 @@ struct CardArt {
 class Card
 {
 protected:
-	CardArt cardArt;
-	std::string cardValue;
-	std::shared_ptr<std::function<void(Turn&)>> action;
+	CardArt _cardArt; 
+	std::string _cardValue;
+	std::shared_ptr<std::function<void(GameStateService&)>> _action;
 public:
 	Card(CardArt cardArt, std::string value);
 	ConsoleColor GetColor() const;
-	void SetAction(std::function<void(Turn&)> cardAction);
-	void InvokeAction(Turn& turn);
+	void SetAction(std::function<void(GameStateService&)> cardAction);
+	void InvokeAction();
 	virtual void PrintCardData();
 	virtual void DrawArt() const;
 	virtual CardArt GetCardArt();

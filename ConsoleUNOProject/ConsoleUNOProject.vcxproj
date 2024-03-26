@@ -127,12 +127,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Rules\BuyCardsRule.cpp" />
+    <ClCompile Include="Components\Effects\PlusFourEffect.cpp" />
+    <ClCompile Include="Components\Effects\PlusTwoEffect.cpp" />
+    <ClCompile Include="Components\Effects\ReverseEffect.cpp" />
+    <ClCompile Include="Components\Effects\WildEffect.cpp" />
     <ClCompile Include="PlaysHistory.cpp" />
     <ClCompile Include="Services\GameStateService.cpp" />
     <ClCompile Include="Rules\DioTheWorldRule.cpp" />
     <ClCompile Include="Players\BotPlayer.cpp" />
     <ClCompile Include="Cards\Card.cpp" />
-    <ClCompile Include="Components\CardEffect.cpp" />
     <ClCompile Include="Cards\CardFactory.cpp" />
     <ClCompile Include="Rules\Rule.cpp" />
     <ClCompile Include="Services\ConsoleService.cpp" />
@@ -153,16 +157,23 @@
     <ClCompile Include="Cards\SpecialCard.cpp" />
     <ClCompile Include="Components\Turn.cpp" />
     <ClCompile Include="Cards\SkipCard.cpp" />
+    <ClCompile Include="Components\Effects\SkipEffect.cpp" />
     <ClCompile Include="Utils\XMLReader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Rules\BuyCardsRule.h" />
+    <ClInclude Include="Components\Effects\PlusFourEffect.h" />
+    <ClInclude Include="Components\Effects\PlusTwoEffect.h" />
+    <ClInclude Include="Components\Effects\ReverseEffect.h" />
+    <ClInclude Include="Components\Effects\WildEffect.h" />
+    <ClInclude Include="Components\GameSettings.h" />
     <ClInclude Include="PlaysHistory.h" />
     <ClInclude Include="Services\GameStateService.h" />
     <ClInclude Include="Rules\DioTheWorldRule.h" />
     <ClInclude Include="GameSettings.h" />
     <ClInclude Include="Players\BotPlayer.h" />
     <ClInclude Include="Cards\Card.h" />
-    <ClInclude Include="Components\CardEffect.h" />
+    <ClInclude Include="Components\Effects\CardEffect.h" />
     <ClInclude Include="Cards\CardFactory.h" />
     <ClInclude Include="Rules\Rule.h" />
     <ClInclude Include="Services\ConsoleService.h" />
@@ -182,6 +193,7 @@
     <ClInclude Include="Cards\SpecialCard.h" />
     <ClInclude Include="Components\Turn.h" />
     <ClInclude Include="Cards\SkipCard.h" />
+    <ClInclude Include="Components\Effects\SkipEffect.h" />
     <ClInclude Include="Utils\XMLReader.h" />
   </ItemGroup>
   <ItemGroup>
